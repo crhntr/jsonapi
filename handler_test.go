@@ -9,7 +9,7 @@ import (
 	"github.com/crhntr/jsonapi"
 )
 
-func TestHandle_ServeHTTP(t *testing.T) {
+func TestMux_ServeHTTP(t *testing.T) {
 	t.Run("When Responding", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
@@ -21,10 +21,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -45,10 +45,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -68,10 +68,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -92,10 +92,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -114,10 +114,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -137,10 +137,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -150,6 +150,17 @@ func TestHandle_ServeHTTP(t *testing.T) {
 	})
 }
 
-func TestHandle_Resource(t *testing.T) {
+func TestMux_HandleResource(t *testing.T) {
+	type Example struct {
+		ID   string `json:"-"`
+		Name string `json:"name"`
+	}
+
+	t.Run("When a Resource Handler is Added", func(t *testing.T) {
+
+	})
+}
+
+func TestMux_HandleResourceSet(t *testing.T) {
 
 }
