@@ -11,7 +11,6 @@ import (
 
 func TestHandle_ServeHTTP(t *testing.T) {
 	t.Run("When Responding", func(t *testing.T) {
-
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
@@ -27,18 +26,15 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		// Run
 		handle.ServeHTTP(res, req)
 
-		// Validate
+		// Test Expectaions
 		result := res.Result()
 
-		s := struct{}{}
-
-		if err := json.NewDecoder(result.Body).Decode(&s); err != nil {
-			t.Error("it should not return an error when reading the body")
+		if err := json.NewDecoder(result.Body).Decode(&struct{}{}); err != nil {
+			t.Error("it should return an object")
 		}
 	})
 
 	t.Run("When Correct Accept and Content Type Headers are Set", func(t *testing.T) {
-
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
@@ -54,7 +50,7 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		// Run
 		handle.ServeHTTP(res, req)
 
-		// Validate
+		// Test Expectaions
 		result := res.Result()
 
 		if result.StatusCode != http.StatusOK {
@@ -64,6 +60,7 @@ func TestHandle_ServeHTTP(t *testing.T) {
 	})
 
 	t.Run("When Accept Request Header is Empty", func(t *testing.T) {
+		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
 			t.Error(err)
@@ -72,8 +69,11 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		res := httptest.NewRecorder()
 
 		var handle jsonapi.Handle
+
+		// Run
 		handle.ServeHTTP(res, req)
 
+		// Test Expectaions
 		result := res.Result()
 		if result.StatusCode != http.StatusNotAcceptable {
 			t.Error("It should return http status not acceptable")
@@ -82,6 +82,7 @@ func TestHandle_ServeHTTP(t *testing.T) {
 	})
 
 	t.Run("When Accept Request Header is Not Correct", func(t *testing.T) {
+		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
 			t.Error(err)
@@ -92,8 +93,11 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		res := httptest.NewRecorder()
 
 		var handle jsonapi.Handle
+
+		// Run
 		handle.ServeHTTP(res, req)
 
+		// Test Expectaions
 		result := res.Result()
 		if result.StatusCode != http.StatusNotAcceptable {
 			t.Error("It should return http status not acceptable")
@@ -101,6 +105,7 @@ func TestHandle_ServeHTTP(t *testing.T) {
 	})
 
 	t.Run("When Content-Type Request Header is Empty", func(t *testing.T) {
+		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
 			t.Error(err)
@@ -110,8 +115,11 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		res := httptest.NewRecorder()
 
 		var handle jsonapi.Handle
+
+		// Run
 		handle.ServeHTTP(res, req)
 
+		// Test Expectaions
 		result := res.Result()
 		if result.StatusCode != http.StatusUnsupportedMediaType {
 			t.Error("It should return http status not unsupported media type")
@@ -119,6 +127,7 @@ func TestHandle_ServeHTTP(t *testing.T) {
 	})
 
 	t.Run("When Content-Type Request Header is Not Correct", func(t *testing.T) {
+		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
 			t.Error(err)
@@ -129,12 +138,18 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		res := httptest.NewRecorder()
 
 		var handle jsonapi.Handle
+
+		// Run
 		handle.ServeHTTP(res, req)
 
+		// Test Expectaions
 		result := res.Result()
 		if result.StatusCode != http.StatusUnsupportedMediaType {
 			t.Error("It should return http status not unsupported media type")
 		}
 	})
+}
+
+func TestHandle_Resource(t *testing.T) {
 
 }
