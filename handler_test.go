@@ -149,7 +149,3 @@ func TestHandle_ServeHTTP(t *testing.T) {
 		}
 	})
 }
-
-func TestHandle_Resource(t *testing.T) {
-
-}
