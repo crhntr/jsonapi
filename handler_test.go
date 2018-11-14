@@ -1,6 +1,7 @@
 package jsonapi_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,6 +10,33 @@ import (
 )
 
 func TestHandle_ServeHTTP(t *testing.T) {
+	t.Run("When Responding", func(t *testing.T) {
+
+		// Setup
+		req, err := http.NewRequest(http.MethodGet, "/", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var handle jsonapi.Handle
+
+		// Run
+		handle.ServeHTTP(res, req)
+
+		// Validate
+		result := res.Result()
+
+		s := struct{}{}
+
+		if err := json.NewDecoder(result.Body).Decode(&s); err != nil {
+			t.Error("it should not return an error when reading the body")
+		}
+	})
+
 	t.Run("When Correct Accept and Content Type Headers are Set", func(t *testing.T) {
 
 		// Setup
