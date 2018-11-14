@@ -10,13 +10,13 @@ type Logger interface {
 	Log(message string)
 }
 
-type Handle struct {
+type Mux struct {
 	Logger Logger
 }
 
 type Meta map[string]interface{}
 
-func (handle Handle) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+func (mux Mux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	accept := req.Header.Get("Accept")
 	if !strings.HasPrefix(accept, ContentType) {
 		res.WriteHeader(http.StatusNotAcceptable)
@@ -38,6 +38,6 @@ func (handle Handle) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	var body Body
 	if err := json.NewEncoder(res).Encode(body); err != nil {
-		handle.Logger.Log("encoding/json.Encode could not encode the root document and returned an error: " + err.Error())
+		mux.Logger.Log("encoding/json.Encode could not encode the root document and returned an error: " + err.Error())
 	}
 }

@@ -21,10 +21,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -45,10 +45,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -68,10 +68,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -92,10 +92,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -114,10 +114,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
@@ -137,10 +137,10 @@ func TestHandle_ServeHTTP(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var handle jsonapi.Handle
+		var mux jsonapi.Mux
 
 		// Run
-		handle.ServeHTTP(res, req)
+		mux.ServeHTTP(res, req)
 
 		// Test Expectaions
 		result := res.Result()
