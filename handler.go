@@ -67,12 +67,42 @@ type Linkage struct {
 
 type Attributes map[string]interface{} // this should be used
 
-type Relationships map[string]interface{}
+type Relationship struct {
+	Data ResourceLinkage `json"data,omitempty"`
+
+	// TODO: add Links
+	// TODO: add Meta
+}
+
+type ResourceLinkage struct {
+	toOne  *Identifier
+	toMany []Identifier
+}
+
+func (linkage ResourceLinkage) MarshalJSON() ([]byte, error) {
+	if linkage.toMany != nil {
+		return json.Marshal(linkage.toMany)
+	}
+	return json.Marshal(linkage.toOne)
+}
+
+func (linkage ResourceLinkage) UnmarshalJSON([]byte) error {
+	return nil
+}
+
+type Relationships map[string]Relationship
 
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
+	rel := rels[relationshipName]
+	rel.Data.toOne, rel.Data.toMany = &Identifier{id, resourceType}, nil
+	rels[relationshipName] = rel
 	return nil
 }
 func (rels Relationships) AppendToMany(relationshipName, resourceType, id string, meta Meta) error {
+	rel := rels[relationshipName]
+	rel.Data.toOne, rel.Data.toMany = nil, append(rel.Data.toMany, Identifier{id, resourceType})
+	rels[relationshipName] = rel
+
 	return nil
 }
 
