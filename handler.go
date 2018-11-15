@@ -5,17 +5,15 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	"sync"
 )
 
 type Logger interface {
 	Log(message string)
 }
 
-type Mux struct {
+type ServeMux struct {
 	Logger    Logger
 	Resources map[string]ResourceHandler
-	mut       *sync.Mutex
 }
 
 type Meta map[string]interface{}
@@ -26,7 +24,7 @@ type Linker interface{}
 // 	return fmt.Sprintf("%s://%s/%s", req.URL.Scheme, req.URL.Host, strings.Join(segments, "/"))
 // }
 
-func (mux Mux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	accept := req.Header.Get("Accept")
 	if !strings.HasPrefix(accept, ContentType) {
 		res.WriteHeader(http.StatusNotAcceptable)
@@ -113,65 +111,59 @@ type CreateResponder interface {
 type UpdateResponder interface{}
 type DeleteResponder interface{}
 
-type FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
-type FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
-type CreateFunc func(res CreateResponder, req *http.Request)
-type UpdateFunc func(res UpdateResponder, req *http.Request, idStr string)
-type DeleteFunc func(res DeleteResponder, req *http.Request, idStr string)
+// Handler Func Types Scope Interfaces for the various endpoints these types
+// allow type checking to promote conformance to {json:api} Specification
+type (
+	FetchOneFunc        func(res FetchOneResonder, req *http.Request, idStr string)
+	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
 
-func (mux *Mux) initResources() {
-	if mux.mut == nil {
-		mux.mut = &sync.Mutex{}
-	}
+	CreateFunc func(res CreateResponder, req *http.Request)
+	UpdateFunc func(res UpdateResponder, req *http.Request, idStr string)
+	DeleteFunc func(res DeleteResponder, req *http.Request, idStr string)
 
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
+	FetchIdentifierFunc           func() // todo
+	FetchIdentifierCollectionFunc func() // todo
 
+	FetchRelationFunc           func() // todo
+	FetchRelationCollectionFunc func() // todo
+)
+
+func (mux *ServeMux) initResources() {
 	if mux.Resources == nil {
 		mux.Resources = make(map[string]ResourceHandler)
 	}
 }
 
-func (mux *Mux) HandleFetchOne(resourceType string, fn FetchOneFunc) {
+func (mux *ServeMux) HandleFetchOne(resourceType string, fn FetchOneFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.FetchOne = fn
 	mux.Resources[resourceType] = handler
 }
 
-func (mux *Mux) HandleFetchCollection(resourceType string, fn FetchCollectionFunc) {
+func (mux *ServeMux) HandleFetchCollection(resourceType string, fn FetchCollectionFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.FetchCollection = fn
 	mux.Resources[resourceType] = handler
 }
 
-func (mux *Mux) HandleCreate(resourceType string, fn CreateFunc) {
+func (mux *ServeMux) HandleCreate(resourceType string, fn CreateFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.Create = fn
 	mux.Resources[resourceType] = handler
 }
 
-func (mux *Mux) HandleUpdate(resourceType string, fn UpdateFunc) {
+func (mux *ServeMux) HandleUpdate(resourceType string, fn UpdateFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.Update = fn
 	mux.Resources[resourceType] = handler
 }
 
-func (mux *Mux) HandleDelete(resourceType string, fn DeleteFunc) {
+func (mux *ServeMux) HandleDelete(resourceType string, fn DeleteFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.Delete = fn
 	mux.Resources[resourceType] = handler
@@ -189,11 +181,6 @@ type ResourceHandler struct {
 	Relationships map[string]ResourceRelationshipHandler
 }
 
-type FetchIdentifierFunc func()           // todo
-type FetchIdentifierCollectionFunc func() // todo
-type FetchRelationFunc func()             // todo
-type FetchRelationCollectionFunc func()   // todo
-
 type ResourceRelationshipHandler struct {
 	FetchIdentifier           FetchIdentifierFunc
 	FetchIdentifierCollection FetchIdentifierCollectionFunc
@@ -202,19 +189,19 @@ type ResourceRelationshipHandler struct {
 	FetchRelationCollection FetchRelationCollectionFunc
 }
 
-func (mux *Mux) HandleFetchIdentifier(resourceType, relationName string, fn FetchIdentifierFunc) {
+func (mux *ServeMux) HandleRelationshipIdentifierFetch(resourceType, relationName string, fn FetchIdentifierFunc) {
 }
-func (mux *Mux) HandleFetchIdentifierCollection(resourceType, relationName string, fn FetchIdentifierCollectionFunc) {
+func (mux *ServeMux) HandleRelationshipIdentifierCollectionFetch(resourceType, relationName string, fn FetchIdentifierCollectionFunc) {
 }
-func (mux *Mux) HandleFetchRelation(resourceType, relationName string, fn FetchRelationFunc) {
+func (mux *ServeMux) HandleRelationshipFetch(resourceType, relationName string, fn FetchOneFunc) {
+
 }
-func (mux *Mux) HandleFetchRelationCollection(resourceType, relationName string, fn FetchRelationCollectionFunc) {
+func (mux *ServeMux) HandleRelationshipCollectionFetch(resourceType, relationName string, fn FetchCollectionFunc) {
+
 }
 
-func (mux *Mux) HandleCreate(resourceType string, fn CreateFunc) {
+func (mux *ServeMux) HandleRelationshipCreate(resourceType string, fn CreateFunc) {
 	mux.initResources()
-	mux.mut.Lock()
-	defer mux.mut.Unlock()
 	handler := mux.Resources[resourceType]
 	handler.Create = fn
 	mux.Resources[resourceType] = handler

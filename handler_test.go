@@ -22,7 +22,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -46,7 +46,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -69,7 +69,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -93,7 +93,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -115,7 +115,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -138,7 +138,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		// Run
 		mux.ServeHTTP(res, req)
@@ -163,7 +163,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		var calledHandler bool
 		mux.HandleFetchCollection("resource", func(res jsonapi.FetchCollectionResponder, req *http.Request) {
@@ -209,7 +209,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		var calledHandler bool
 		mux.HandleFetchCollection("resource", func(res jsonapi.FetchCollectionResponder, req *http.Request) {
@@ -304,7 +304,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		mux.HandleFetchCollection("resource", func(res jsonapi.FetchCollectionResponder, req *http.Request) {})
 
@@ -330,7 +330,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 
 		res := httptest.NewRecorder()
 
-		var mux jsonapi.Mux
+		var mux jsonapi.ServeMux
 
 		var passedIDStr string
 		mux.HandleFetchOne("resource", func(res jsonapi.FetchOneResonder, req *http.Request, idStr string) {
