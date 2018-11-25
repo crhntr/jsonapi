@@ -74,22 +74,6 @@ type Relationship struct {
 	// TODO: add Meta
 }
 
-type ResourceLinkage struct {
-	toOne  *Identifier
-	toMany []Identifier
-}
-
-func (linkage ResourceLinkage) MarshalJSON() ([]byte, error) {
-	if linkage.toMany != nil {
-		return json.Marshal(linkage.toMany)
-	}
-	return json.Marshal(linkage.toOne)
-}
-
-func (linkage ResourceLinkage) UnmarshalJSON([]byte) error {
-	return nil
-}
-
 type Relationships map[string]Relationship
 
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
@@ -224,10 +208,8 @@ func (mux *ServeMux) HandleRelationshipIdentifierFetch(resourceType, relationNam
 func (mux *ServeMux) HandleRelationshipIdentifierCollectionFetch(resourceType, relationName string, fn FetchIdentifierCollectionFunc) {
 }
 func (mux *ServeMux) HandleRelationshipFetch(resourceType, relationName string, fn FetchOneFunc) {
-
 }
 func (mux *ServeMux) HandleRelationshipCollectionFetch(resourceType, relationName string, fn FetchCollectionFunc) {
-
 }
 
 func (mux *ServeMux) HandleRelationshipCreate(resourceType string, fn CreateFunc) {
