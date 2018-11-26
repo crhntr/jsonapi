@@ -3,19 +3,19 @@ package jsonapi
 import "encoding/json"
 
 type ResourceLinkage struct {
-	toOne  *Identifier
-	toMany []Identifier
+	ToOne  Identifier
+	ToMany []Identifier
 }
 
 func (linkage ResourceLinkage) IsToMany() bool {
-	return linkage.toMany != nil
+	return linkage.ToMany != nil
 }
 
 func (linkage ResourceLinkage) MarshalJSON() ([]byte, error) {
 	if linkage.IsToMany() {
-		return json.Marshal(linkage.toMany)
+		return json.Marshal(linkage.ToMany)
 	}
-	return json.Marshal(linkage.toOne)
+	return json.Marshal(linkage.ToOne)
 }
 
 func (linkage *ResourceLinkage) UnmarshalJSON(buf []byte) error {
@@ -23,7 +23,7 @@ func (linkage *ResourceLinkage) UnmarshalJSON(buf []byte) error {
 		return nil
 	}
 	if buf[0] == '[' {
-		return json.Unmarshal(buf, &linkage.toMany)
+		return json.Unmarshal(buf, &linkage.ToMany)
 	}
-	return json.Unmarshal(buf, &linkage.toOne)
+	return json.Unmarshal(buf, &linkage.ToOne)
 }

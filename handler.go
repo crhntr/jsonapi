@@ -78,15 +78,15 @@ type Relationships map[string]Relationship
 
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.toOne, rel.Data.toMany = &Identifier{id, resourceType}, nil
+	rel.Data.ToOne, rel.Data.ToMany = Identifier{id, resourceType}, nil
 	rels[relationshipName] = rel
 	return nil
 }
 func (rels Relationships) AppendToMany(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.toOne, rel.Data.toMany = nil, append(rel.Data.toMany, Identifier{id, resourceType})
+	rel.Data.ToOne.ID, rel.Data.ToOne.Type = "", ""
+	rel.Data.ToMany = append(rel.Data.ToMany, Identifier{id, resourceType})
 	rels[relationshipName] = rel
-
 	return nil
 }
 
