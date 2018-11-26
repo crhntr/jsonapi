@@ -78,7 +78,8 @@ type Relationships map[string]Relationship
 
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.ToOne, rel.Data.ToMany = Identifier{id, resourceType}, nil
+	rel.Data.ToMany = nil
+	rel.Data.ToOne = Identifier{id, resourceType}
 	rels[relationshipName] = rel
 	return nil
 }
