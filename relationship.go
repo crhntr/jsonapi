@@ -39,6 +39,9 @@ func (linkage ResourceLinkage) MarshalJSON() ([]byte, error) {
 	if linkage.IsToMany() {
 		return json.Marshal(linkage.ToMany)
 	}
+	if linkage.ToOne.ID == "" && linkage.ToOne.Type == "" {
+		return json.Marshal(nil)
+	}
 	return json.Marshal(linkage.ToOne)
 }
 
