@@ -7,6 +7,11 @@ import (
 
 const ContentType = "application/vnd.api+json"
 
+type Identifier struct {
+	ID   string `json:"id"`
+	Type string `json:"type"`
+}
+
 // ValidateMemberName expects that the name follows the stricter naming
 // standards. For example, spaces are not allowed.
 func ValidateMemberName(name string) error {

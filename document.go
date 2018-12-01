@@ -4,11 +4,6 @@ import (
 	"net/http"
 )
 
-type Identifier struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-}
-
 type Logger interface {
 	Log(message string)
 }
