@@ -9,7 +9,7 @@
 * Maximize flexibility for model/business logic implementation
 * Minimize (or abstain) from use of Reflection
 * Simple Mux
-* A few resonably large example apps
+* A few reasonably large example apps
 * BDD Tests to further inspire if example apps are not enough
 
 ## Links
