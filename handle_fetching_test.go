@@ -8,11 +8,8 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
-func TestFetchHandler_handle_FetchCollection(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	res := struct {
+func TestFetchHandler_handle(t *testing.T) {
+	type Response struct {
 		*httptest.ResponseRecorder
 		*MockDataSetter
 		*MockDataAppender
@@ -20,126 +17,102 @@ func TestFetchHandler_handle_FetchCollection(t *testing.T) {
 		*MockIdentifierAppender
 		*MockErrorAppender
 		*MockIncluder
-	}{ResponseRecorder: httptest.NewRecorder()}
-
-	req, err := http.NewRequest(http.MethodGet, "/", nil)
-	if err != nil {
-		t.Fatal(err)
 	}
 
-	var callCount int
-
-	hand := FetchHandler{col: FetchCollectionFunc(func(res FetchCollectionResponder, req *http.Request) {
-		callCount++
-	})}
-
-	hand.handle(res, req, "resource")
-
-	if callCount != 1 {
-		t.Error("it should call hand.col once")
-		t.Log(callCount)
-	}
-}
-
-func TestFetchHandler_handle_FetchOne(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	res := struct {
-		*httptest.ResponseRecorder
-		*MockDataSetter
-		*MockDataAppender
-		*MockIdentifierSetter
-		*MockIdentifierAppender
-		*MockErrorAppender
-		*MockIncluder
-	}{ResponseRecorder: httptest.NewRecorder()}
-
-	req, err := http.NewRequest(http.MethodGet, "/0", nil)
-	if err != nil {
-		t.Fatal(err)
+	mustNotErr := func(err error) {
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
-	var callCount int
-
-	hand := FetchHandler{one: FetchOneFunc(func(res FetchOneResonder, req *http.Request, idStr string) {
-		callCount++
-	})}
-
-	hand.handle(res, req, "resource")
-
-	if callCount != 1 {
-		t.Error("it should call hand.one once")
-		t.Log(callCount)
-	}
-}
-
-func TestFetchHandler_handle_FetchRelated(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	res := struct {
-		*httptest.ResponseRecorder
-		*MockDataSetter
-		*MockDataAppender
-		*MockIdentifierSetter
-		*MockIdentifierAppender
-		*MockErrorAppender
-		*MockIncluder
-	}{ResponseRecorder: httptest.NewRecorder()}
-
-	req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
-	if err != nil {
-		t.Fatal(err)
+	mustBeCalledOnce := func(callCount int) {
+		if callCount != 1 {
+			t.Error(`it should call hand.relationships["rel"] once`)
+			t.Log(callCount)
+		}
 	}
 
-	var callCount int
+	t.Run("when collection resource is fetched", func(t *testing.T) {
+		t.Run("and a handler has been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
 
-	hand := FetchHandler{}
-	hand.related = make(map[string]FetchRelatedFunc)
-	hand.related["rel"] = FetchRelatedFunc(func(res FetchRelatedResponder, req *http.Request, id, relation string) {
-		callCount++
+			var callCount int
+
+			hand := FetchHandler{col: FetchCollectionFunc(func(res FetchCollectionResponder, req *http.Request) {
+				callCount++
+			})}
+
+			req, err := http.NewRequest(http.MethodGet, "/", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			mustBeCalledOnce(callCount)
+		})
 	})
 
-	hand.handle(res, req, "resource")
+	t.Run("when one resource is fetched", func(t *testing.T) {
+		t.Run("and a handler has been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
 
-	if callCount != 1 {
-		t.Error(`it should call hand.related["rel"] once`)
-		t.Log(callCount)
-	}
-}
+			var callCount int
 
-func TestFetchHandler_handle_FetchRelationships(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+			hand := FetchHandler{one: FetchOneFunc(func(res FetchOneResonder, req *http.Request, idStr string) {
+				callCount++
+			})}
 
-	res := struct {
-		*httptest.ResponseRecorder
-		*MockDataSetter
-		*MockDataAppender
-		*MockIdentifierSetter
-		*MockIdentifierAppender
-		*MockErrorAppender
-		*MockIncluder
-	}{ResponseRecorder: httptest.NewRecorder()}
+			req, err := http.NewRequest(http.MethodGet, "/0", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-	req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	var callCount int
-
-	hand := FetchHandler{}
-	hand.relationships = make(map[string]FetchRelationshipsFunc)
-	hand.relationships["rel"] = FetchRelationshipsFunc(func(res FetchRelationshipsResponder, req *http.Request, id, relation string) {
-		callCount++
+			hand.handle(res, req, "resource")
+			mustBeCalledOnce(callCount)
+		})
 	})
 
-	hand.handle(res, req, "resource")
+	t.Run("when related resource is fetched", func(t *testing.T) {
+		t.Run("and a handler has been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
 
-	if callCount != 1 {
-		t.Error(`it should call hand.relationships["rel"] once`)
-		t.Log(callCount)
-	}
+			var callCount int
+
+			hand := FetchHandler{}
+			hand.related = make(map[string]FetchRelatedFunc)
+			hand.related["rel"] = FetchRelatedFunc(func(res FetchRelatedResponder, req *http.Request, id, relation string) {
+				callCount++
+			})
+
+			req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			mustBeCalledOnce(callCount)
+		})
+	})
+
+	t.Run("when relationships resource is fetched", func(t *testing.T) {
+		t.Run("and a handler has been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var callCount int
+
+			hand := FetchHandler{}
+			hand.relationships = make(map[string]FetchRelationshipsFunc)
+			hand.relationships["rel"] = FetchRelationshipsFunc(func(res FetchRelationshipsResponder, req *http.Request, id, relation string) {
+				callCount++
+			})
+
+			req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			mustBeCalledOnce(callCount)
+		})
+	})
 }
