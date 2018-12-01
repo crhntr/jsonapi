@@ -5,32 +5,41 @@ import (
 )
 
 type (
+	// FetchOneFunc handles a `/:resourceName/:id` endpoint
 	FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
 
+	// FetchCollectionFunc handles a `/:resourceName` endpoint
 	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
 
+	// FetchRelatedFunc handles a `/:resourceName/:id/:relation` endpoint
 	FetchRelatedFunc func(res FetchRelatedResponder, req *http.Request, id, relation string)
 
+	// FetchRelationshipsFunc handles a `/:resourceName/:id/relationships/:relation` endpoint
 	FetchRelationshipsFunc func(res FetchRelationshipsResponder, req *http.Request, id, relation string)
 
+	// FetchCollectionResponder represents the 'ResponseWriter' for FetchOneFunc
 	FetchCollectionResponder interface {
 		DataAppender
 		ErrorAppender
 		Includer
 	}
 
+	// FetchOneResonder represents the 'ResponseWriter' for FetchCollectionFunc
 	FetchOneResonder interface {
 		DataSetter
 		ErrorAppender
 		Includer
 	}
 
+	// FetchRelatedResponder represents the 'ResponseWriter' for FetchRelatedFunc
 	FetchRelatedResponder interface {
 		DataSetter
 		DataAppender
 		ErrorAppender
 	}
 
+	// FetchRelationshipsResponder represents the 'ResponseWriter' for
+	// FetchRelationshipsFunc
 	FetchRelationshipsResponder interface {
 		IdentifierSetter
 		IdentifierAppender

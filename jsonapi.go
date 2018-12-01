@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
+// ContentType is used in http Headers Content-Type and Accept
 const ContentType = "application/vnd.api+json"
 
+// Identifier is used in Resource Identifier Objects
 type Identifier struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
