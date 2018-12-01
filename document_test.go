@@ -1,14 +1,24 @@
-package jsonapi_test
+package jsonapi
 
 import (
 	"errors"
 	"testing"
+)
 
-	"github.com/crhntr/jsonapi"
+var (
+	// Test TopLevelDocument implements fetchResponder
+	doc interface {
+		DataSetter
+		DataAppender
+		IdentifierSetter
+		IdentifierAppender
+		ErrorAppender
+		Includer
+	} = &TopLevelDocument{}
 )
 
 func Test_ServeHTTP_AppendError(t *testing.T) {
-	doc := jsonapi.TopLevelDocument{}
+	doc := TopLevelDocument{}
 
 	doc.AppendError(nil)
 	if len(doc.Errors) != 0 {

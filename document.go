@@ -73,6 +73,14 @@ func (tld *TopLevelDocument) Include(resourceType, id string, attributes interfa
 	return nil
 }
 
+func (tld *TopLevelDocument) SetIdentifier(resourceType, id string) error {
+	return tld.SetData(resourceType, id, nil, nil, nil, nil)
+}
+
+func (tld *TopLevelDocument) AppendIdentifier(resourceType, id string) error {
+	return tld.AppendData(resourceType, id, nil, nil, nil, nil)
+}
+
 // func UnmarshalAttributes(req *http.Request, attributes interface{}) {
 //
 // }
