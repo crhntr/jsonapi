@@ -39,7 +39,7 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			var callCount int
 
-			hand := FetchHandler{col: FetchCollectionFunc(func(res FetchCollectionResponder, req *http.Request) {
+			hand := fetchHandler{col: FetchCollectionFunc(func(res FetchCollectionResponder, req *http.Request) {
 				callCount++
 			})}
 
@@ -55,7 +55,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 
 			req, err := http.NewRequest(http.MethodGet, "/", nil)
 			mustNotErr(err)
@@ -75,7 +75,7 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			var callCount int
 
-			hand := FetchHandler{one: FetchOneFunc(func(res FetchOneResonder, req *http.Request, idStr string) {
+			hand := fetchHandler{one: FetchOneFunc(func(res FetchOneResonder, req *http.Request, idStr string) {
 				callCount++
 			})}
 
@@ -91,7 +91,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 
 			req, err := http.NewRequest(http.MethodGet, "/0", nil)
 			mustNotErr(err)
@@ -111,7 +111,7 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			var callCount int
 
-			hand := FetchHandler{}
+			hand := fetchHandler{}
 			hand.related = make(map[string]FetchRelatedFunc)
 			hand.related["rel"] = FetchRelatedFunc(func(res FetchRelatedResponder, req *http.Request, id, relation string) {
 				callCount++
@@ -129,7 +129,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 
 			req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
 			mustNotErr(err)
@@ -145,7 +145,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 			hand.related = make(map[string]FetchRelatedFunc)
 
 			req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
@@ -166,7 +166,7 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			var callCount int
 
-			hand := FetchHandler{}
+			hand := fetchHandler{}
 			hand.relationships = make(map[string]FetchRelationshipsFunc)
 			hand.relationships["rel"] = FetchRelationshipsFunc(func(res FetchRelationshipsResponder, req *http.Request, id, relation string) {
 				callCount++
@@ -184,7 +184,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 
 			req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)
 			mustNotErr(err)
@@ -200,7 +200,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			var hand FetchHandler
+			var hand fetchHandler
 			hand.relationships = make(map[string]FetchRelationshipsFunc)
 
 			req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)

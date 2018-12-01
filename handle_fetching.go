@@ -5,9 +5,11 @@ import (
 )
 
 type (
-	FetchOneFunc        func(res FetchOneResonder, req *http.Request, idStr string)
+	FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
+
 	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
-	FetchRelatedFunc    func(res FetchRelatedResponder, req *http.Request, id, relation string)
+
+	FetchRelatedFunc func(res FetchRelatedResponder, req *http.Request, id, relation string)
 
 	FetchRelationshipsFunc func(res FetchRelationshipsResponder, req *http.Request, id, relation string)
 
@@ -43,17 +45,17 @@ type (
 		ErrorAppender
 		Includer
 	}
+
+	fetchHandler struct {
+		one FetchOneFunc
+		col FetchCollectionFunc
+
+		related       map[string]FetchRelatedFunc
+		relationships map[string]FetchRelationshipsFunc
+	}
 )
 
-type FetchHandler struct {
-	one FetchOneFunc
-	col FetchCollectionFunc
-
-	related       map[string]FetchRelatedFunc
-	relationships map[string]FetchRelationshipsFunc
-}
-
-func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
+func (hand fetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
 	if req.URL.Path == "/" {
 		if hand.col == nil {
 			res.WriteHeader(http.StatusNotFound)
