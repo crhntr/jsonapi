@@ -24,6 +24,6 @@ type (
 	}
 
 	Includer interface {
-		Include(resourceType, id string, attributes interface{}, links Links, meta Meta) error
+		Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
 	}
 )

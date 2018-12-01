@@ -32,9 +32,10 @@ func (ress Resources) setType(resourceType string) {
 }
 
 type TopLevelDocument struct {
-	Data   typeSetter `json:"data,omitempty"`
-	Errors []error    `json:"errors,omitempty"`
-	Meta   Meta       `json:"meta,omitempty"`
+	Data     typeSetter `json:"data,omitempty"`
+	Errors   []error    `json:"errors,omitempty"`
+	Meta     Meta       `json:"meta,omitempty"`
+	Included Resources  `json:"included,omitempty"`
 
 	resourceSlice Resources
 }
@@ -67,7 +68,13 @@ func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interfa
 	return nil
 }
 
-func (tld *TopLevelDocument) Include(resourceType, id string, attributes interface{}, links Links, meta Meta) error {
+func (tld *TopLevelDocument) Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	tld.Included = append(tld.Included, Resource{
+		ID:            id,
+		Type:          resourceType,
+		Attributes:    attributes,
+		Relationships: relationships,
+	})
 	return nil
 }
 

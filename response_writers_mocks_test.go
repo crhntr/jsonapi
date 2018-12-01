@@ -5,9 +5,8 @@
 package jsonapi
 
 import (
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
 // MockDataSetter is a mock of DataSetter interface
@@ -207,13 +206,13 @@ func (m *MockIncluder) EXPECT() *MockIncluderMockRecorder {
 }
 
 // Include mocks base method
-func (m *MockIncluder) Include(resourceType, id string, attributes interface{}, links Links, meta Meta) error {
-	ret := m.ctrl.Call(m, "Include", resourceType, id, attributes, links, meta)
+func (m *MockIncluder) Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	ret := m.ctrl.Call(m, "Include", resourceType, id, attributes, relationships, links, meta)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Include indicates an expected call of Include
-func (mr *MockIncluderMockRecorder) Include(resourceType, id, attributes, links, meta interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Include", reflect.TypeOf((*MockIncluder)(nil).Include), resourceType, id, attributes, links, meta)
+func (mr *MockIncluderMockRecorder) Include(resourceType, id, attributes, relationships, links, meta interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Include", reflect.TypeOf((*MockIncluder)(nil).Include), resourceType, id, attributes, relationships, links, meta)
 }
