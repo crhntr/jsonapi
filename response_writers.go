@@ -11,11 +11,11 @@ type (
 	}
 
 	IdentifierSetter interface {
-		SetData(resourceType, id string) error
+		SetIdentifier(resourceType, id string) error
 	}
 
 	IdentifierAppender interface {
-		AppendData(resourceType, id string) error
+		AppendIdentifier(resourceType, id string) error
 	}
 
 	ErrorAppender interface {
