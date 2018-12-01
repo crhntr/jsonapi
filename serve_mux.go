@@ -215,3 +215,33 @@ func (mux *ServeMux) HandleRelationshipCreate(resourceType string, fn CreateFunc
 	handler.Create = fn
 	mux.Resources[resourceType] = handler
 }
+
+// TODO: organize the following
+
+type CreateResponder interface {
+	DataSetter
+}
+
+type UpdateResponder interface{}
+type DeleteResponder interface{}
+
+// Handler Func Types Scope Interfaces for the various endpoints these types
+// allow type checking to promote conformance to {json:api} Specification
+type (
+	CreateFunc func(res CreateResponder, req *http.Request)
+	UpdateFunc func(res UpdateResponder, req *http.Request, idStr string)
+	DeleteFunc func(res DeleteResponder, req *http.Request, idStr string)
+
+	FetchIdentifierFunc           func() // todo
+	FetchIdentifierCollectionFunc func() // todo
+)
+
+type ResourceHandler struct {
+	PermitClientGeneratedID bool
+
+	FetchOne        FetchOneFunc
+	FetchCollection FetchCollectionFunc
+	Create          CreateFunc
+	Update          UpdateFunc
+	Delete          DeleteFunc
+}
