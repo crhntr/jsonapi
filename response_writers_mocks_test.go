@@ -79,74 +79,74 @@ func (mr *MockDataAppenderMockRecorder) AppendData(resourceType, id, attributes,
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppendData", reflect.TypeOf((*MockDataAppender)(nil).AppendData), resourceType, id, attributes, relationships, links, meta)
 }
 
-// MockIdentifierSetter is a mock of IdentifierSetter interface
-type MockIdentifierSetter struct {
+// MockIdentitySetter is a mock of IdentitySetter interface
+type MockIdentitySetter struct {
 	ctrl     *gomock.Controller
-	recorder *MockIdentifierSetterMockRecorder
+	recorder *MockIdentitySetterMockRecorder
 }
 
-// MockIdentifierSetterMockRecorder is the mock recorder for MockIdentifierSetter
-type MockIdentifierSetterMockRecorder struct {
-	mock *MockIdentifierSetter
+// MockIdentitySetterMockRecorder is the mock recorder for MockIdentitySetter
+type MockIdentitySetterMockRecorder struct {
+	mock *MockIdentitySetter
 }
 
-// NewMockIdentifierSetter creates a new mock instance
-func NewMockIdentifierSetter(ctrl *gomock.Controller) *MockIdentifierSetter {
-	mock := &MockIdentifierSetter{ctrl: ctrl}
-	mock.recorder = &MockIdentifierSetterMockRecorder{mock}
+// NewMockIdentitySetter creates a new mock instance
+func NewMockIdentitySetter(ctrl *gomock.Controller) *MockIdentitySetter {
+	mock := &MockIdentitySetter{ctrl: ctrl}
+	mock.recorder = &MockIdentitySetterMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockIdentifierSetter) EXPECT() *MockIdentifierSetterMockRecorder {
+func (m *MockIdentitySetter) EXPECT() *MockIdentitySetterMockRecorder {
 	return m.recorder
 }
 
-// SetIdentifier mocks base method
-func (m *MockIdentifierSetter) SetIdentifier(resourceType, id string) error {
-	ret := m.ctrl.Call(m, "SetIdentifier", resourceType, id)
+// SetIdentity mocks base method
+func (m *MockIdentitySetter) SetIdentity(resourceType, id string) error {
+	ret := m.ctrl.Call(m, "SetIdentity", resourceType, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SetIdentifier indicates an expected call of SetIdentifier
-func (mr *MockIdentifierSetterMockRecorder) SetIdentifier(resourceType, id interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIdentifier", reflect.TypeOf((*MockIdentifierSetter)(nil).SetIdentifier), resourceType, id)
+// SetIdentity indicates an expected call of SetIdentity
+func (mr *MockIdentitySetterMockRecorder) SetIdentity(resourceType, id interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIdentity", reflect.TypeOf((*MockIdentitySetter)(nil).SetIdentity), resourceType, id)
 }
 
-// MockIdentifierAppender is a mock of IdentifierAppender interface
-type MockIdentifierAppender struct {
+// MockIdentityAppender is a mock of IdentityAppender interface
+type MockIdentityAppender struct {
 	ctrl     *gomock.Controller
-	recorder *MockIdentifierAppenderMockRecorder
+	recorder *MockIdentityAppenderMockRecorder
 }
 
-// MockIdentifierAppenderMockRecorder is the mock recorder for MockIdentifierAppender
-type MockIdentifierAppenderMockRecorder struct {
-	mock *MockIdentifierAppender
+// MockIdentityAppenderMockRecorder is the mock recorder for MockIdentityAppender
+type MockIdentityAppenderMockRecorder struct {
+	mock *MockIdentityAppender
 }
 
-// NewMockIdentifierAppender creates a new mock instance
-func NewMockIdentifierAppender(ctrl *gomock.Controller) *MockIdentifierAppender {
-	mock := &MockIdentifierAppender{ctrl: ctrl}
-	mock.recorder = &MockIdentifierAppenderMockRecorder{mock}
+// NewMockIdentityAppender creates a new mock instance
+func NewMockIdentityAppender(ctrl *gomock.Controller) *MockIdentityAppender {
+	mock := &MockIdentityAppender{ctrl: ctrl}
+	mock.recorder = &MockIdentityAppenderMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockIdentifierAppender) EXPECT() *MockIdentifierAppenderMockRecorder {
+func (m *MockIdentityAppender) EXPECT() *MockIdentityAppenderMockRecorder {
 	return m.recorder
 }
 
-// AppendIdentifier mocks base method
-func (m *MockIdentifierAppender) AppendIdentifier(resourceType, id string) error {
-	ret := m.ctrl.Call(m, "AppendIdentifier", resourceType, id)
+// AppendIdentity mocks base method
+func (m *MockIdentityAppender) AppendIdentity(resourceType, id string) error {
+	ret := m.ctrl.Call(m, "AppendIdentity", resourceType, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// AppendIdentifier indicates an expected call of AppendIdentifier
-func (mr *MockIdentifierAppenderMockRecorder) AppendIdentifier(resourceType, id interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppendIdentifier", reflect.TypeOf((*MockIdentifierAppender)(nil).AppendIdentifier), resourceType, id)
+// AppendIdentity indicates an expected call of AppendIdentity
+func (mr *MockIdentityAppenderMockRecorder) AppendIdentity(resourceType, id interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AppendIdentity", reflect.TypeOf((*MockIdentityAppender)(nil).AppendIdentity), resourceType, id)
 }
 
 // MockErrorAppender is a mock of ErrorAppender interface

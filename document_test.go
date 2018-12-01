@@ -10,8 +10,8 @@ var (
 	doc interface {
 		DataSetter
 		DataAppender
-		IdentifierSetter
-		IdentifierAppender
+		IdentitySetter
+		IdentityAppender
 		ErrorAppender
 		Includer
 	} = &TopLevelDocument{}

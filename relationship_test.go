@@ -15,11 +15,11 @@ func TestResourceLinkage_UnmarshalJSON(t *testing.T) {
 		}
 
 		if linkage.ToMany != nil || linkage.ToOne.ID != "" || linkage.ToOne.Type != "" {
-			t.Error("it should not set any identifiers")
+			t.Error("it should not set any Identitys")
 		}
 	})
 
-	t.Run("when passed a list with to identifiers", func(t *testing.T) {
+	t.Run("when passed a list with to Identitys", func(t *testing.T) {
 		linkage := &ResourceLinkage{}
 		buf := []byte(`[{"id": "lemon", "type": "citrus"}, {"id": "orange", "type": "citrus"}]`)
 
@@ -28,10 +28,10 @@ func TestResourceLinkage_UnmarshalJSON(t *testing.T) {
 		}
 
 		if linkage.ToOne.ID != "" || linkage.ToOne.Type != "" {
-			t.Error("it should set the toOne identifiers to a zero value")
+			t.Error("it should set the toOne Identitys to a zero value")
 		}
 		if len(linkage.ToMany) != 2 {
-			t.Error("it should unmarshal both identifiers")
+			t.Error("it should unmarshal both Identitys")
 		}
 		if linkage.ToMany[0].ID != "lemon" ||
 			linkage.ToMany[0].Type != "citrus" ||
@@ -41,7 +41,7 @@ func TestResourceLinkage_UnmarshalJSON(t *testing.T) {
 		}
 	})
 
-	t.Run("when passed a single identifier", func(t *testing.T) {
+	t.Run("when passed a single Identity", func(t *testing.T) {
 		linkage := &ResourceLinkage{}
 		buf := []byte(`{"id": "lemon", "type": "citrus"}`)
 
@@ -65,7 +65,7 @@ func TestResourceLinkage_MarshalJSON(t *testing.T) {
 	})
 
 	t.Run("when passed a non empty list", func(t *testing.T) {
-		linkage := ResourceLinkage{ToMany: []Identifier{}}
+		linkage := ResourceLinkage{ToMany: []Identity{}}
 		buf, err := json.Marshal(linkage)
 		if err != nil {
 			t.Error(err)
@@ -77,7 +77,7 @@ func TestResourceLinkage_MarshalJSON(t *testing.T) {
 	})
 
 	t.Run("when passed an list", func(t *testing.T) {
-		linkage := ResourceLinkage{ToMany: []Identifier{{"0", "cat"}, {"1", "cat"}, {"2", "cat"}}}
+		linkage := ResourceLinkage{ToMany: []Identity{{"0", "cat"}, {"1", "cat"}, {"2", "cat"}}}
 		buf, err := json.Marshal(linkage)
 		if err != nil {
 			t.Error(err)
@@ -88,15 +88,15 @@ func TestResourceLinkage_MarshalJSON(t *testing.T) {
 		}
 	})
 
-	t.Run("when passed a single identifier", func(t *testing.T) {
-		linkage := ResourceLinkage{ToOne: Identifier{"0", "cat"}}
+	t.Run("when passed a single Identity", func(t *testing.T) {
+		linkage := ResourceLinkage{ToOne: Identity{"0", "cat"}}
 
 		buf, err := json.Marshal(linkage)
 		if err != nil {
 			t.Error(err)
 		}
 		if !bytes.Equal(buf, []byte(`{"id":"0","type":"cat"}`)) {
-			t.Error("it should return a single resource identifier object")
+			t.Error("it should return a single resource Identity object")
 			t.Log(string(buf))
 		}
 	})

@@ -13,8 +13,8 @@ func TestFetchHandler_handle(t *testing.T) {
 		*httptest.ResponseRecorder
 		*MockDataSetter
 		*MockDataAppender
-		*MockIdentifierSetter
-		*MockIdentifierAppender
+		*MockIdentitySetter
+		*MockIdentityAppender
 		*MockErrorAppender
 		*MockIncluder
 		*MockDataCollectionSetter

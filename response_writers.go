@@ -13,15 +13,15 @@ type (
 		AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
 	}
 
-	// IdentifierSetter represents the interface to set a single resource linkage.
-	IdentifierSetter interface {
-		SetIdentifier(resourceType, id string) error
+	// IdentitySetter represents the interface to set a single resource linkage.
+	IdentitySetter interface {
+		SetIdentity(resourceType, id string) error
 	}
 
-	// IdentifierAppender represents the interface to set a collection of resource
+	// IdentityAppender represents the interface to set a collection of resource
 	// linkages.
-	IdentifierAppender interface {
-		AppendIdentifier(resourceType, id string) error
+	IdentityAppender interface {
+		AppendIdentity(resourceType, id string) error
 	}
 
 	// ErrorAppender represents the interface to append an error to the `errors`

@@ -41,16 +41,16 @@ type (
 	// FetchRelationshipsResponder represents the 'ResponseWriter' for
 	// FetchRelationshipsFunc
 	FetchRelationshipsResponder interface {
-		IdentifierSetter
-		IdentifierAppender
+		IdentitySetter
+		IdentityAppender
 	}
 
 	fetchResponder interface {
 		http.ResponseWriter
 		DataSetter
 		DataAppender
-		IdentifierSetter
-		IdentifierAppender
+		IdentitySetter
+		IdentityAppender
 		ErrorAppender
 		Includer
 		DataCollectionSetter

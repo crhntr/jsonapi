@@ -21,7 +21,7 @@ type Relationships map[string]Relationship
 // SetToOne safely sets a ToOne foreign {id,type] for a related resource.
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.ToOne = Identifier{id, resourceType}
+	rel.Data.ToOne = Identity{id, resourceType}
 	rels[relationshipName] = rel
 
 	if rel.Data.ToMany != nil {
@@ -34,7 +34,7 @@ func (rels Relationships) SetToOne(relationshipName, resourceType, id string, me
 // AppendToMany safely sets a ToMany foreign {id,type} for a related resource.
 func (rels Relationships) AppendToMany(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.ToMany = append(rel.Data.ToMany, Identifier{id, resourceType})
+	rel.Data.ToMany = append(rel.Data.ToMany, Identity{id, resourceType})
 	rels[relationshipName] = rel
 
 	if rel.Data.ToOne.ID != "" || rel.Data.ToOne.Type != "" {
@@ -47,11 +47,11 @@ func (rels Relationships) AppendToMany(relationshipName, resourceType, id string
 // ResourceLinkage handles the duality, to-one or to-many, of a relationship
 // object data member.
 type ResourceLinkage struct {
-	ToOne  Identifier
-	ToMany []Identifier
+	ToOne  Identity
+	ToMany []Identity
 }
 
-// IsToMany checks if a ToMany Resource Identifier has been set.
+// IsToMany checks if a ToMany Resource Identity has been set.
 func (linkage ResourceLinkage) IsToMany() bool {
 	return linkage.ToMany != nil
 }

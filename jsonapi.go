@@ -8,8 +8,8 @@ import (
 // ContentType is used in http Headers Content-Type and Accept
 const ContentType = "application/vnd.api+json"
 
-// Identifier is used in Resource Identifier Objects
-type Identifier struct {
+// Identity is used in Resource Identity Objects
+type Identity struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
 }

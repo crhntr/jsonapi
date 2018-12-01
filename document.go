@@ -13,7 +13,7 @@ type (
 )
 
 type typeSetter interface {
-	setType(resourceType string)
+	getType(resourceType string)
 }
 
 // Resource represents a single “Resource object” and appears in a JSON:API document to
@@ -26,7 +26,7 @@ type Resource struct {
 	Relationships Relationships `json:"relationships,omitempty"`
 }
 
-func (res *Resource) setType(resourceType string) {
+func (res *Resource) getType(resourceType string) {
 	if res.Type == "" { // a resource type may be different then the endpoint
 		res.Type = resourceType
 	}
@@ -36,9 +36,9 @@ func (res *Resource) setType(resourceType string) {
 // document to represent a collection of resources.
 type Resources []Resource
 
-func (ress Resources) setType(resourceType string) {
+func (ress Resources) getType(resourceType string) {
 	for i := range ress {
-		ress[i].setType(resourceType)
+		ress[i].getType(resourceType)
 	}
 }
 
@@ -121,13 +121,13 @@ func (doc *TopLevelDocument) AppendData(resourceType, id string, attributes inte
 	return nil
 }
 
-// SetIdentifier implements IdentifierSetter
-func (doc *TopLevelDocument) SetIdentifier(resourceType, id string) error {
+// SetIdentity implements IdentitySetter
+func (doc *TopLevelDocument) SetIdentity(resourceType, id string) error {
 	return doc.SetData(resourceType, id, nil, nil, nil, nil)
 }
 
-// AppendIdentifier implements IdentifierAppender
-func (doc *TopLevelDocument) AppendIdentifier(resourceType, id string) error {
+// AppendIdentity implements IdentityAppender
+func (doc *TopLevelDocument) AppendIdentity(resourceType, id string) error {
 	return doc.AppendData(resourceType, id, nil, nil, nil, nil)
 }
 
