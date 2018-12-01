@@ -17,10 +17,6 @@ type Meta map[string]interface{}
 
 type Linker interface{}
 
-// func CreateLink(req *http.Request, segments ...string) string {
-// 	return fmt.Sprintf("%s://%s/%s", req.URL.Scheme, req.URL.Host, strings.Join(segments, "/"))
-// }
-
 type Linkage struct {
 	// Links
 
