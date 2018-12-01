@@ -218,9 +218,9 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 			type NamedThing struct {
 				Name string `json:"name"`
 			}
-			res.AppendData("0", NamedThing{"foo"}, nil, nil, nil)
-			res.AppendData("1", NamedThing{"bar"}, nil, nil, nil)
-			res.AppendData("2", NamedThing{"baz"}, nil, nil, nil)
+			res.AppendData("resource", "0", NamedThing{"foo"}, nil, nil, nil)
+			res.AppendData("resource", "1", NamedThing{"bar"}, nil, nil, nil)
+			res.AppendData("resource", "2", NamedThing{"baz"}, nil, nil, nil)
 		})
 		// Run
 		mux.ServeHTTP(res, req)
@@ -339,7 +339,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 			type NamedThing struct {
 				Name string `json:"name"`
 			}
-			res.SetData("n", NamedThing{"foo"}, nil, nil, nil)
+			res.SetData("resource", "n", NamedThing{"foo"}, nil, nil, nil)
 		})
 
 		// Run

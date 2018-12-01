@@ -30,11 +30,11 @@ type Linkage struct {
 type Attributes map[string]interface{} // this should be used
 
 type DataSetter interface {
-	SetData(id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
+	SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
 }
 
 type DataAppender interface {
-	AppendData(id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
+	AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
 }
 
 type Includer interface {
@@ -141,18 +141,20 @@ func (tld *TopLevelDocument) AppendError(err error) {
 	}
 }
 
-func (tld *TopLevelDocument) AppendData(id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
+func (tld *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
 	tld.resourceSlice = append(tld.resourceSlice, Resource{
 		ID:            id,
+		Type:          resourceType,
 		Attributes:    attributes,
 		Relationships: relationships,
 	})
 	return nil
 }
 
-func (tld *TopLevelDocument) SetData(id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
+func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
 	tld.Data = &Resource{
 		ID:            id,
+		Type:          resourceType,
 		Attributes:    attributes,
 		Relationships: relationships,
 	}
