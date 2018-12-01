@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type Logger interface {
+	Log(message string)
+}
+
 type ServeMux struct {
 	Logger    Logger
 	Resources map[string]ResourceHandler

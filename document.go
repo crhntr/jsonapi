@@ -4,10 +4,6 @@ import (
 	"net/http"
 )
 
-type Logger interface {
-	Log(message string)
-}
-
 type Meta map[string]interface{}
 
 type Linker interface{}
