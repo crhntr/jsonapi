@@ -5,16 +5,20 @@ import (
 )
 
 type (
-	// FetchOneFunc handles a `/:endpoint/:id` endpoint
+	// FetchOneFunc defines how to handle a request for a single resource.
 	FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
 
-	// FetchCollectionFunc handles a `/:endpoint` endpoint
+	// FetchCollectionFunc defines how to handle a request for a collection of
+	// resources.
 	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
 
-	// FetchRelatedFunc handles a `/:endpoint/:id/:relation` endpoint
+	// FetchRelatedFunc defines how to handle a request for a related resource.
 	FetchRelatedFunc func(res FetchRelatedResponder, req *http.Request, id, relation string)
 
-	// FetchRelationshipsFunc handles a `/:endpoint/:id/relationships/:relation` endpoint
+	// FetchRelationshipsFunc defines how to handle a request for the identities
+	// of a relationship and the responder provides methods to render either a
+	// to-one or to-many relationship. SetDataCollection should be called when
+	// the relationship represents an empty to-many relationship.
 	FetchRelationshipsFunc func(res FetchRelationshipsResponder, req *http.Request, id, relation string)
 
 	// FetchCollectionResponder represents the 'ResponseWriter' for FetchOneFunc
@@ -43,6 +47,7 @@ type (
 	FetchRelationshipsResponder interface {
 		IdentitySetter
 		IdentityAppender
+		DataCollectionSetter
 	}
 
 	fetchResponder interface {
