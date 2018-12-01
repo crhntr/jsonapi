@@ -50,6 +50,22 @@ func TestFetchHandler_handle(t *testing.T) {
 			hand.handle(res, req, "resource")
 			mustBeCalledOnce(callCount)
 		})
+
+		t.Run("and a handler has not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+
+			req, err := http.NewRequest(http.MethodGet, "/", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
+		})
 	})
 
 	t.Run("when one resource is fetched", func(t *testing.T) {
@@ -69,6 +85,22 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			hand.handle(res, req, "resource")
 			mustBeCalledOnce(callCount)
+		})
+
+		t.Run("and a handler has not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+
+			req, err := http.NewRequest(http.MethodGet, "/0", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
 		})
 	})
 
@@ -92,6 +124,39 @@ func TestFetchHandler_handle(t *testing.T) {
 			hand.handle(res, req, "resource")
 			mustBeCalledOnce(callCount)
 		})
+
+		t.Run("and a no resource handlers have not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+
+			req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
+		})
+
+		t.Run("and a the handler for this relation has not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+			hand.related = make(map[string]FetchRelatedFunc)
+
+			req, err := http.NewRequest(http.MethodGet, "/0/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
+		})
 	})
 
 	t.Run("when relationships resource is fetched", func(t *testing.T) {
@@ -113,6 +178,39 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			hand.handle(res, req, "resource")
 			mustBeCalledOnce(callCount)
+		})
+
+		t.Run("and a no resource handlers have not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+
+			req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
+		})
+
+		t.Run("and a the handler for this relationship has not been set", func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			var hand FetchHandler
+			hand.relationships = make(map[string]FetchRelationshipsFunc)
+
+			req, err := http.NewRequest(http.MethodGet, "/0/relationships/rel", nil)
+			mustNotErr(err)
+			res := Response{ResponseRecorder: httptest.NewRecorder()}
+
+			hand.handle(res, req, "resource")
+			if res.Code != http.StatusNotFound {
+				t.Error("it should return http status not found")
+			}
 		})
 	})
 }

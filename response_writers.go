@@ -1,6 +1,7 @@
 package jsonapi
 
 // TopLevelDocumentInterfaces
+
 type (
 	DataSetter interface {
 		SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error

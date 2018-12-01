@@ -55,6 +55,11 @@ type FetchHandler struct {
 
 func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
 	if req.URL.Path == "/" {
+		if hand.col == nil {
+			res.WriteHeader(http.StatusNotFound)
+			return
+		}
+
 		hand.col(res, req)
 		return
 	}
@@ -64,6 +69,10 @@ func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceN
 	)
 	id, req.URL.Path = shiftPath(req.URL.Path)
 	if req.URL.Path == "/" {
+		if hand.one == nil {
+			res.WriteHeader(http.StatusNotFound)
+			return
+		}
 		hand.one(res, req, id)
 	}
 
@@ -74,20 +83,20 @@ func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceN
 
 		relationshipsHand, ok := hand.relationships[rel]
 		if !ok {
-
+			res.WriteHeader(http.StatusNotFound)
 			return
 		}
 		relationshipsHand(res, req, id, rel)
 	}
 
 	if hand.related == nil {
-
+		res.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	relatedHand, ok := hand.related[rel]
 	if !ok {
-
+		res.WriteHeader(http.StatusNotFound)
 		return
 	}
 	relatedHand(res, req, id, rel)

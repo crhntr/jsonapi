@@ -227,6 +227,7 @@ type DeleteResponder interface{}
 
 // Handler Func Types Scope Interfaces for the various endpoints these types
 // allow type checking to promote conformance to {json:api} Specification
+
 type (
 	CreateFunc func(res CreateResponder, req *http.Request)
 	UpdateFunc func(res UpdateResponder, req *http.Request, idStr string)
