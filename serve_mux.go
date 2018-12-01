@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// ServeMux should be used to setup endpoints.
+// it implements http.Handler. It's zero value is valid.
 type ServeMux struct {
 	Resources map[string]EndpointHandler
 }
@@ -72,12 +74,16 @@ func (mux *ServeMux) initResources() {
 	}
 }
 
+// EndpointHandler encapsulates fetch, create, update, and delete handlers
+// for a single endpoint
 type EndpointHandler struct {
 	// PermitClientGeneratedID bool
 
 	fetch fetchHandler
 }
 
+// HandleFetchOne should be used to set and endpoint handler for
+// GET `/:endpoint/:id`
 func (mux *ServeMux) HandleFetchOne(endpoint string, fn FetchOneFunc) {
 	mux.initResources()
 	handler := mux.Resources[endpoint]
@@ -85,6 +91,8 @@ func (mux *ServeMux) HandleFetchOne(endpoint string, fn FetchOneFunc) {
 	mux.Resources[endpoint] = handler
 }
 
+// HandleFetchCollection should be used to set and endpoint handler for
+// GET `/:endpoint`
 func (mux *ServeMux) HandleFetchCollection(endpoint string, fn FetchCollectionFunc) {
 	mux.initResources()
 	handler := mux.Resources[endpoint]
