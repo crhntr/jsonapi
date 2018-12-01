@@ -5,8 +5,6 @@ type (
 	Links map[string]Link
 )
 
-type Attributes map[string]interface{} // this should be used
-
 type typeSetter interface {
 	setType(resourceType string)
 }
