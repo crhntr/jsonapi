@@ -12,12 +12,6 @@ type Meta map[string]interface{}
 
 type Linker interface{}
 
-type Linkage struct {
-	// Links
-
-	Data interface{} `json:"data"`
-}
-
 type Attributes map[string]interface{} // this should be used
 
 type DataSetter interface {

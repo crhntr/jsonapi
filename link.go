@@ -5,6 +5,10 @@ import (
 	"errors"
 )
 
+type Linkage struct {
+	Data interface{} `json:"data"`
+}
+
 type Link struct {
 	String string
 
