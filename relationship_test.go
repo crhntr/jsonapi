@@ -101,3 +101,39 @@ func TestResourceLinkage_MarshalJSON(t *testing.T) {
 		}
 	})
 }
+
+func TestResourceLinkage_SetToOne(t *testing.T) {
+	t.Run("when relationship is empty", func(t *testing.T) {
+		relationships := make(Relationships)
+		if err := relationships.SetToOne("relation", "resource", "1", nil); err != nil {
+			t.Error("it should not return an error")
+		}
+	})
+
+	t.Run("when relationship not is empty", func(t *testing.T) {
+		relationships := make(Relationships)
+		relationships.AppendToMany("relation", "resource", "1", nil)
+
+		if err := relationships.SetToOne("relation", "resource", "1", nil); err == nil {
+			t.Error("it should return an error")
+		}
+	})
+}
+
+func TestResourceLinkage_AppendToMany(t *testing.T) {
+	t.Run("when relationship is empty", func(t *testing.T) {
+		relationships := make(Relationships)
+		if err := relationships.AppendToMany("relation", "resource", "1", nil); err != nil {
+			t.Error("it should not return an error")
+		}
+	})
+
+	t.Run("when relationship not is empty", func(t *testing.T) {
+		relationships := make(Relationships)
+		relationships.SetToOne("relation", "resource", "1", nil)
+
+		if err := relationships.AppendToMany("relation", "resource", "1", nil); err == nil {
+			t.Error("it should return an error")
+		}
+	})
+}

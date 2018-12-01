@@ -1,6 +1,9 @@
 package jsonapi
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Relationship struct {
 	Data ResourceLinkage `json"data,omitempty"`
@@ -13,16 +16,25 @@ type Relationships map[string]Relationship
 
 func (rels Relationships) SetToOne(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.ToMany = nil
 	rel.Data.ToOne = Identifier{id, resourceType}
 	rels[relationshipName] = rel
+
+	if rel.Data.ToMany != nil {
+		rel.Data.ToMany = nil
+		return fmt.Errorf("to many relationship already set for %q", relationshipName)
+	}
 	return nil
 }
+
 func (rels Relationships) AppendToMany(relationshipName, resourceType, id string, meta Meta) error {
 	rel := rels[relationshipName]
-	rel.Data.ToOne.ID, rel.Data.ToOne.Type = "", ""
 	rel.Data.ToMany = append(rel.Data.ToMany, Identifier{id, resourceType})
 	rels[relationshipName] = rel
+
+	if rel.Data.ToOne.ID != "" || rel.Data.ToOne.Type != "" {
+		rel.Data.ToOne.ID, rel.Data.ToOne.Type = "", ""
+		return fmt.Errorf("to one relationship already set for %q", relationshipName)
+	}
 	return nil
 }
 
