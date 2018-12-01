@@ -6,7 +6,7 @@ import (
 )
 
 type Relationship struct {
-	Data ResourceLinkage `json"data,omitempty"`
+	Data ResourceLinkage `json:"data,omitempty"`
 
 	// TODO: add Links
 	// TODO: add Meta
