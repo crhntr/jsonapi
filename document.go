@@ -1,10 +1,9 @@
 package jsonapi
 
 type (
-	Meta map[string]interface{}
+	Meta  map[string]interface{}
+	Links map[string]Link
 )
-
-type Linker interface{}
 
 type Attributes map[string]interface{} // this should be used
 
@@ -48,7 +47,8 @@ func (tld *TopLevelDocument) AppendError(err error) {
 	}
 }
 
-func (tld *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
+func (tld *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	tld.Data = nil
 	tld.resourceSlice = append(tld.resourceSlice, Resource{
 		ID:            id,
 		Type:          resourceType,
@@ -58,7 +58,8 @@ func (tld *TopLevelDocument) AppendData(resourceType, id string, attributes inte
 	return nil
 }
 
-func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error {
+func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	tld.resourceSlice = nil
 	tld.Data = &Resource{
 		ID:            id,
 		Type:          resourceType,
@@ -68,7 +69,7 @@ func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interfa
 	return nil
 }
 
-func (tld *TopLevelDocument) Include(resourceType, id string, attributes interface{}, links Linker, meta Meta) error {
+func (tld *TopLevelDocument) Include(resourceType, id string, attributes interface{}, links Links, meta Meta) error {
 	return nil
 }
 

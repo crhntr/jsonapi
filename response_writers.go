@@ -4,11 +4,11 @@ package jsonapi
 
 type (
 	DataSetter interface {
-		SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
+		SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
 	}
 
 	DataAppender interface {
-		AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Linker, meta Meta) error
+		AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
 	}
 
 	IdentifierSetter interface {
@@ -24,6 +24,6 @@ type (
 	}
 
 	Includer interface {
-		Include(resourceType, id string, attributes interface{}, links Linker, meta Meta) error
+		Include(resourceType, id string, attributes interface{}, links Links, meta Meta) error
 	}
 )
