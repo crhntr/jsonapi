@@ -12,10 +12,6 @@ type (
 	Links map[string]Link
 )
 
-type typeSetter interface {
-	getType(resourceType string)
-}
-
 // Resource represents a single “Resource object” and appears in a JSON:API document to
 // represent a resource.
 type Resource struct {
@@ -26,21 +22,9 @@ type Resource struct {
 	Relationships Relationships `json:"relationships,omitempty"`
 }
 
-func (res *Resource) getType(resourceType string) {
-	if res.Type == "" { // a resource type may be different then the endpoint
-		res.Type = resourceType
-	}
-}
-
 // Resources represents an array of “Resource objects” that appear in a JSON:API
 // document to represent a collection of resources.
 type Resources []Resource
-
-func (ress Resources) getType(resourceType string) {
-	for i := range ress {
-		ress[i].getType(resourceType)
-	}
-}
 
 type topLevelMembers struct {
 	Meta     Meta      `json:"meta,omitempty"`
@@ -49,8 +33,8 @@ type topLevelMembers struct {
 
 // TopLevelDocument represents the standard root response for all requests.
 type TopLevelDocument struct {
-	Data   typeSetter `json:"-"`
-	Errors []Error    `json:"-"`
+	Data   interface{} `json:"-"`
+	Errors []Error     `json:"-"`
 
 	resourceSlice Resources
 	topLevelMembers
@@ -86,7 +70,7 @@ func (doc TopLevelDocument) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(struct {
-		Data typeSetter `json:"data"`
+		Data interface{} `json:"data"`
 		topLevelMembers
 	}{doc.Data, doc.topLevelMembers})
 }
