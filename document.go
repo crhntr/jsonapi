@@ -97,7 +97,7 @@ func (doc *TopLevelDocument) UnmarshalJSON(buf []byte) error {
 	return nil
 }
 
-// SetData implements DataSetter
+// SetData implements DataSetter.
 func (doc *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
 	doc.resourceSlice = nil
 	doc.Data = &Resource{
@@ -109,7 +109,7 @@ func (doc *TopLevelDocument) SetData(resourceType, id string, attributes interfa
 	return nil
 }
 
-// AppendData implements DataAppender
+// AppendData implements DataAppender.
 func (doc *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
 	doc.resourceSlice = append(doc.resourceSlice, Resource{
 		ID:            id,
@@ -141,7 +141,7 @@ func (doc *TopLevelDocument) AppendError(detail error) {
 	}
 }
 
-// Include implements Includer
+// Include implements Includer.
 func (doc *TopLevelDocument) Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
 	doc.Included = append(doc.Included, Resource{
 		ID:            id,
