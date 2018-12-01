@@ -36,7 +36,7 @@ func TestFetchHandler_handle_FetchCollection(t *testing.T) {
 	hand.handle(res, req, "resource")
 
 	if callCount != 1 {
-		t.Error("hand.col should be called once")
+		t.Error("it should call hand.col once")
 		t.Log(callCount)
 	}
 }
@@ -69,7 +69,7 @@ func TestFetchHandler_handle_FetchOne(t *testing.T) {
 	hand.handle(res, req, "resource")
 
 	if callCount != 1 {
-		t.Error("hand.one should be called once")
+		t.Error("it should call hand.one once")
 		t.Log(callCount)
 	}
 }
@@ -104,7 +104,7 @@ func TestFetchHandler_handle_FetchRelated(t *testing.T) {
 	hand.handle(res, req, "resource")
 
 	if callCount != 1 {
-		t.Error(`hand.related["rel"] should be called once`)
+		t.Error(`it should call hand.related["rel"] once`)
 		t.Log(callCount)
 	}
 }
@@ -139,7 +139,7 @@ func TestFetchHandler_handle_FetchRelationships(t *testing.T) {
 	hand.handle(res, req, "resource")
 
 	if callCount != 1 {
-		t.Error(`hand.relationships["rel"] should be called once`)
+		t.Error(`it should call hand.relationships["rel"] once`)
 		t.Log(callCount)
 	}
 }
