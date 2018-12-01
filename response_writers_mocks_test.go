@@ -216,3 +216,36 @@ func (m *MockIncluder) Include(resourceType, id string, attributes interface{}, 
 func (mr *MockIncluderMockRecorder) Include(resourceType, id, attributes, relationships, links, meta interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Include", reflect.TypeOf((*MockIncluder)(nil).Include), resourceType, id, attributes, relationships, links, meta)
 }
+
+// MockDataCollectionSetter is a mock of DataCollectionSetter interface
+type MockDataCollectionSetter struct {
+	ctrl     *gomock.Controller
+	recorder *MockDataCollectionSetterMockRecorder
+}
+
+// MockDataCollectionSetterMockRecorder is the mock recorder for MockDataCollectionSetter
+type MockDataCollectionSetterMockRecorder struct {
+	mock *MockDataCollectionSetter
+}
+
+// NewMockDataCollectionSetter creates a new mock instance
+func NewMockDataCollectionSetter(ctrl *gomock.Controller) *MockDataCollectionSetter {
+	mock := &MockDataCollectionSetter{ctrl: ctrl}
+	mock.recorder = &MockDataCollectionSetterMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use
+func (m *MockDataCollectionSetter) EXPECT() *MockDataCollectionSetterMockRecorder {
+	return m.recorder
+}
+
+// SetDataCollection mocks base method
+func (m *MockDataCollectionSetter) SetDataCollection() {
+	m.ctrl.Call(m, "SetDataCollection")
+}
+
+// SetDataCollection indicates an expected call of SetDataCollection
+func (mr *MockDataCollectionSetterMockRecorder) SetDataCollection() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetDataCollection", reflect.TypeOf((*MockDataCollectionSetter)(nil).SetDataCollection))
+}

@@ -1,5 +1,9 @@
 package jsonapi
 
+import (
+	"encoding/json"
+)
+
 type (
 	// Meta can be used to include non-standard meta-information
 	Meta map[string]interface{}
@@ -38,20 +42,65 @@ func (ress Resources) setType(resourceType string) {
 	}
 }
 
+type topLevelMembers struct {
+	Meta     Meta      `json:"meta,omitempty"`
+	Included Resources `json:"included,omitempty"`
+}
+
 // TopLevelDocument represents the standard root response for all requests.
 type TopLevelDocument struct {
-	Data     typeSetter `json:"data,omitempty"`
-	Errors   []error    `json:"errors,omitempty"`
-	Meta     Meta       `json:"meta,omitempty"`
-	Included Resources  `json:"included,omitempty"`
+	Data   typeSetter `json:"-"`
+	Errors []Error    `json:"-"`
 
 	resourceSlice Resources
+	topLevelMembers
+}
+
+// SetDataCollection is used to ensure the top level data member is encoded
+// as an empty array when it is empty
+func (doc *TopLevelDocument) SetDataCollection() {
+	doc.resourceSlice = make(Resources, 0)
+}
+
+// MarshalJSON marshals a link as either an object or string depending on how
+// it has been set. If both are set, it preferes objects.
+func (doc TopLevelDocument) MarshalJSON() ([]byte, error) {
+	if len(doc.Errors) != 0 {
+		return json.Marshal(struct {
+			Errors []Error `json:"errors"`
+			topLevelMembers
+		}{doc.Errors, doc.topLevelMembers})
+	}
+
+	if doc.Data == nil {
+		if doc.resourceSlice != nil {
+			return json.Marshal(struct {
+				Data []struct{} `json:"data"`
+				topLevelMembers
+			}{[]struct{}{}, doc.topLevelMembers})
+		}
+		return json.Marshal(struct {
+			Data struct{} `json:"data"`
+			topLevelMembers
+		}{struct{}{}, doc.topLevelMembers})
+	}
+
+	return json.Marshal(struct {
+		Data typeSetter `json:"data"`
+		topLevelMembers
+	}{doc.Data, doc.topLevelMembers})
+}
+
+// UnmarshalJSON unmarshals a link as either an object or string depending on
+// how it has been encoded.
+func (doc *TopLevelDocument) UnmarshalJSON(buf []byte) error {
+	return nil
 }
 
 // SetData implements DataSetter
-func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
-	tld.resourceSlice = nil
-	tld.Data = &Resource{
+func (doc *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	doc.resourceSlice = nil
+	doc.Data = &Resource{
 		ID:            id,
 		Type:          resourceType,
 		Attributes:    attributes,
@@ -61,37 +110,40 @@ func (tld *TopLevelDocument) SetData(resourceType, id string, attributes interfa
 }
 
 // AppendData implements DataAppender
-func (tld *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
-	tld.Data = nil
-	tld.resourceSlice = append(tld.resourceSlice, Resource{
+func (doc *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	doc.resourceSlice = append(doc.resourceSlice, Resource{
 		ID:            id,
 		Type:          resourceType,
 		Attributes:    attributes,
 		Relationships: relationships,
 	})
+	doc.Data = doc.resourceSlice
 	return nil
 }
 
 // SetIdentifier implements IdentifierSetter
-func (tld *TopLevelDocument) SetIdentifier(resourceType, id string) error {
-	return tld.SetData(resourceType, id, nil, nil, nil, nil)
+func (doc *TopLevelDocument) SetIdentifier(resourceType, id string) error {
+	return doc.SetData(resourceType, id, nil, nil, nil, nil)
 }
 
 // AppendIdentifier implements IdentifierAppender
-func (tld *TopLevelDocument) AppendIdentifier(resourceType, id string) error {
-	return tld.AppendData(resourceType, id, nil, nil, nil, nil)
+func (doc *TopLevelDocument) AppendIdentifier(resourceType, id string) error {
+	return doc.AppendData(resourceType, id, nil, nil, nil, nil)
 }
 
-// AppendError implements ErrorAppender
-func (tld *TopLevelDocument) AppendError(err error) {
-	if err != nil {
-		tld.Errors = append(tld.Errors, err)
+// AppendError implements ErrorAppender appending the error as
+// the detail member of an Error
+func (doc *TopLevelDocument) AppendError(detail error) {
+	if detail != nil {
+		doc.Errors = append(doc.Errors, Error{
+			Detail: detail.Error(),
+		})
 	}
 }
 
 // Include implements Includer
-func (tld *TopLevelDocument) Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
-	tld.Included = append(tld.Included, Resource{
+func (doc *TopLevelDocument) Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
+	doc.Included = append(doc.Included, Resource{
 		ID:            id,
 		Type:          resourceType,
 		Attributes:    attributes,

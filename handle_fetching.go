@@ -5,16 +5,16 @@ import (
 )
 
 type (
-	// FetchOneFunc handles a `/:resourceName/:id` endpoint
+	// FetchOneFunc handles a `/:endpoint/:id` endpoint
 	FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
 
-	// FetchCollectionFunc handles a `/:resourceName` endpoint
+	// FetchCollectionFunc handles a `/:endpoint` endpoint
 	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
 
-	// FetchRelatedFunc handles a `/:resourceName/:id/:relation` endpoint
+	// FetchRelatedFunc handles a `/:endpoint/:id/:relation` endpoint
 	FetchRelatedFunc func(res FetchRelatedResponder, req *http.Request, id, relation string)
 
-	// FetchRelationshipsFunc handles a `/:resourceName/:id/relationships/:relation` endpoint
+	// FetchRelationshipsFunc handles a `/:endpoint/:id/relationships/:relation` endpoint
 	FetchRelationshipsFunc func(res FetchRelationshipsResponder, req *http.Request, id, relation string)
 
 	// FetchCollectionResponder represents the 'ResponseWriter' for FetchOneFunc
@@ -53,6 +53,7 @@ type (
 		IdentifierAppender
 		ErrorAppender
 		Includer
+		DataCollectionSetter
 	}
 
 	fetchHandler struct {
@@ -64,13 +65,14 @@ type (
 	}
 )
 
-func (hand fetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
+func (hand fetchHandler) handle(res fetchResponder, req *http.Request, _ string) {
 	if req.URL.Path == "/" {
 		if hand.col == nil {
 			res.WriteHeader(http.StatusNotFound)
 			return
 		}
 
+		res.SetDataCollection()
 		hand.col(res, req)
 		return
 	}

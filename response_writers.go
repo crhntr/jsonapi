@@ -35,4 +35,11 @@ type (
 	Includer interface {
 		Include(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
 	}
+
+	// DataCollectionSetter represents the interface to ensure top level document
+	//  member `data` is encoded as an empty array when encoding an empty
+	// collection. It is used interanally and is exported for mocking responses.
+	DataCollectionSetter interface {
+		SetDataCollection()
+	}
 )

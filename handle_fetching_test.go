@@ -17,6 +17,7 @@ func TestFetchHandler_handle(t *testing.T) {
 		*MockIdentifierAppender
 		*MockErrorAppender
 		*MockIncluder
+		*MockDataCollectionSetter
 	}
 
 	mustNotErr := func(err error) {
@@ -45,7 +46,9 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			req, err := http.NewRequest(http.MethodGet, "/", nil)
 			mustNotErr(err)
-			res := Response{ResponseRecorder: httptest.NewRecorder()}
+			res := Response{ResponseRecorder: httptest.NewRecorder(), MockDataCollectionSetter: NewMockDataCollectionSetter(ctrl)}
+
+			res.MockDataCollectionSetter.EXPECT().SetDataCollection().MinTimes(1)
 
 			hand.handle(res, req, "resource")
 			mustBeCalledOnce(callCount)

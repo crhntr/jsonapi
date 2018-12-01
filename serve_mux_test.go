@@ -152,7 +152,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 }
 
 func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
-	t.Run("When GET empty resource collection", func(t *testing.T) {
+	t.Run("When fetching an empty resource collection", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/resource", nil)
 		if err != nil {
@@ -198,7 +198,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 		}
 	})
 
-	t.Run("When GET resource collection", func(t *testing.T) {
+	t.Run("When fetching a resource collection", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/resource", nil)
 		if err != nil {
@@ -293,7 +293,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 		}
 	})
 
-	t.Run("When GET unknown resource", func(t *testing.T) {
+	t.Run("When fetching an unknown resource", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/unknown", nil)
 		if err != nil {
@@ -319,7 +319,7 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 		}
 	})
 
-	t.Run("When GET single resource", func(t *testing.T) {
+	t.Run("When fetching a single resource", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/resource/n", nil)
 		if err != nil {
@@ -351,6 +351,52 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 		if passedIDStr != "n" {
 			t.Error(`it should have passed idStr "n"`)
 			t.Log(passedIDStr)
+		}
+	})
+
+	t.Run("When fetching a single resource that does not exist", func(t *testing.T) {
+		// Setup
+		req, err := http.NewRequest(http.MethodGet, "/resource/n", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+
+		mux.HandleFetchOne("resource", func(res jsonapi.FetchOneResonder, req *http.Request, idStr string) {
+		})
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		result := res.Result()
+
+		bodyBuf, err := ioutil.ReadAll(result.Body)
+		if err != nil {
+			t.Error("it should return valid json")
+			t.Log(err)
+			t.Log(string(bodyBuf))
+		}
+
+		var doc map[string]interface{}
+		if err := json.Unmarshal(bodyBuf, &doc); err != nil {
+			t.Error("it should return an object")
+			t.Log(err)
+			t.Log(string(bodyBuf))
+		}
+		dataMemberValue, hasDataMember := doc["data"]
+		if !hasDataMember {
+			t.Error("it should return a document with member called data")
+			t.Log(string(bodyBuf))
+		}
+		_, dataMemberValueIsObject := dataMemberValue.(map[string]interface{})
+		if !dataMemberValueIsObject {
+			t.Error(`it should have document member data that is an object`)
+			t.Log(string(bodyBuf))
 		}
 	})
 }
