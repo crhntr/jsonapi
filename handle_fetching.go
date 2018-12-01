@@ -1,6 +1,8 @@
 package jsonapi
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type (
 	FetchOneFunc        func(res FetchOneResonder, req *http.Request, idStr string)
@@ -34,7 +36,10 @@ type (
 
 	fetchResponder interface {
 		http.ResponseWriter
+		DataSetter
 		DataAppender
+		IdentifierSetter
+		IdentifierAppender
 		ErrorAppender
 		Includer
 	}
@@ -44,9 +49,46 @@ type FetchHandler struct {
 	one FetchOneFunc
 	col FetchCollectionFunc
 
-	rels map[string]FetchRelatedResponder
+	related       map[string]FetchRelatedFunc
+	relationships map[string]FetchRelationshipsFunc
 }
 
 func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
-	hand.col(res, req)
+	if req.URL.Path == "/" {
+		hand.col(res, req)
+		return
+	}
+
+	var (
+		id, rel string
+	)
+	id, req.URL.Path = shiftPath(req.URL.Path)
+	if req.URL.Path == "/" {
+		hand.one(res, req, id)
+	}
+
+	rel, req.URL.Path = shiftPath(req.URL.Path)
+
+	if rel == "relationships" {
+		rel, req.URL.Path = shiftPath(req.URL.Path)
+
+		relationshipsHand, ok := hand.relationships[rel]
+		if !ok {
+
+			return
+		}
+		relationshipsHand(res, req, id, rel)
+	}
+
+	if hand.related == nil {
+
+		return
+	}
+
+	relatedHand, ok := hand.related[rel]
+	if !ok {
+
+		return
+	}
+	relatedHand(res, req, id, rel)
 }
