@@ -7,12 +7,12 @@ func TestValidateMemberName(t *testing.T) {
 		validNames := []string{
 			"resource",
 			"RESOURCE",
-			"resourceName",
-			"ResourceName",
-			"resource-name",
-			"resource_name",
+			"resourceType",
+			"resourcetype",
+			"resource-type",
+			"resource_type",
 			"n",
-			"this_is_a_resource-name",
+			"this_is_a_resource-type",
 		}
 
 		for i, name := range validNames {
@@ -30,15 +30,15 @@ func TestValidateMemberName(t *testing.T) {
 			"",
 			" resource",
 			"resource ",
-			"resource name",
+			"resource type",
 			"resource🙃",
-			"_resource_name_",
-			"-resource-name-",
-			"resource-name-",
-			"Resource-name-",
-			"resource_name_",
-			"resource+name",
-			"\"resource_name\"",
+			"_resource_type_",
+			"-resource-type-",
+			"resource-type-",
+			"Resource-type-",
+			"resource_type_",
+			"resource+type",
+			"\"resource_type\"",
 		}
 
 		for i, name := range invalidNames {
