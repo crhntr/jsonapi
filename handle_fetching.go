@@ -31,6 +31,13 @@ type (
 		IdentifierSetter
 		IdentifierAppender
 	}
+
+	fetchResponder interface {
+		http.ResponseWriter
+		DataAppender
+		ErrorAppender
+		Includer
+	}
 )
 
 type FetchHandler struct {
@@ -40,6 +47,6 @@ type FetchHandler struct {
 	rels map[string]FetchRelatedResponder
 }
 
-func (fetchHandler FetchHandler) handle(res http.ResponseWriter, req *http.Request, resourceName string) {
-
+func (hand FetchHandler) handle(res fetchResponder, req *http.Request, resourceName string) {
+	hand.col(res, req)
 }
