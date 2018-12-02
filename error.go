@@ -10,7 +10,7 @@ type Error struct {
 	Links Links `json:"links,omitempty"`
 
 	// About may be a link that leads to further details about this particular occurrence of the problem.
-	About Link `json:"about,omitempty"`
+	About *Link `json:"about,omitempty"`
 
 	// Status may be the HTTP status code applicable to this problem, expressed as a string value.
 	Status string `json:"status,omitempty"`
