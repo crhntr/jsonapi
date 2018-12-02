@@ -7,7 +7,7 @@ import (
 
 type (
 	// CreateFunc defines how to handle a request to create a resource.
-	CreateFunc func(res CreateResponder, req *http.Request, idStr string)
+	CreateFunc func(res CreateResponder, req *http.Request, endpoint string)
 
 	// CreateResponder defines what to respond to a request to create a resource.
 	CreateResponder interface {

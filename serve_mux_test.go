@@ -151,7 +151,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 	})
 }
 
-func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
+func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 	t.Run("When fetching an empty resource collection", func(t *testing.T) {
 		// Setup
 		req, err := http.NewRequest(http.MethodGet, "/resource", nil)
@@ -397,6 +397,58 @@ func TestHandle_ServeHTTP_RequestMux(t *testing.T) {
 		if !dataMemberValueIsObject {
 			t.Error(`it should have document member data that is an object`)
 			t.Log(string(bodyBuf))
+		}
+	})
+}
+
+func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
+	t.Run("When creating a single resource", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodPost, "/resource/n", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+
+		var (
+			recievedEndpoint string
+		)
+		mux.HandleCreate("resource", jsonapi.CreateFunc(func(res jsonapi.CreateResponder, req *http.Request, endpoint string) {
+			recievedEndpoint = endpoint
+		}))
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if recievedEndpoint != "resource" {
+			t.Error("it should recieve the correct endpoint parameter")
+			t.Log(recievedEndpoint)
+		}
+	})
+
+	t.Run("When a request to create resource is unsupported", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodPost, "/resource", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+		mux.HandleFetchOne("resource", nil) // to create resource endpoint
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if res.Code != http.StatusForbidden {
+			t.Error("it should respond with status forbiden")
+			t.Log(res.Code)
 		}
 	})
 }
