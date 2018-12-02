@@ -56,7 +56,7 @@ func (error Error) HTTPStatus() int {
 func (error Error) Error() string {
 	buf, err := json.Marshal(error)
 	if err != nil {
-		return fmt.Sprintf("error marshaling Error struct: %s", err.Error())
+		return fmt.Sprintf("could not encode error: %s", err.Error())
 	}
 	return string(buf)
 }
