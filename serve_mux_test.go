@@ -451,4 +451,62 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 			t.Log(res.Code)
 		}
 	})
+
+	t.Run("When a request with an unsupported http Method is submitted", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodPut, "/resource", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+		mux.HandleFetchOne("resource", nil) // to create resource endpoint
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if res.Code != http.StatusMethodNotAllowed {
+			t.Error("it should respond with status method not allowed")
+			t.Log(res.Code)
+		}
+	})
+
+	t.Run("When a request returns an error", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, "/resource/id", nil)
+		if err != nil {
+			t.Error(err)
+		}
+		req.Header.Set("Accept", jsonapi.ContentType)
+		req.Header.Set("Content-Type", jsonapi.ContentType)
+
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+		mux.HandleFetchOne("resource", jsonapi.FetchOneFunc(func(res jsonapi.FetchOneResonder, req *http.Request, idStr string) {
+			res.AppendError(jsonapi.Error{Detail: "not authorized", Status: http.StatusUnauthorized})
+		}))
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if res.Code != http.StatusUnauthorized {
+			t.Error("it should respond with status StatusUnauthorized")
+			t.Log(res.Code)
+			t.Log(res.Body.String())
+		}
+	})
 }
+
+// type statusRecorder struct {
+// 	http.ResponseWriter
+// 	status int
+// }
+//
+// func (rec *statusRecorder) WriteHeader(code int) {
+// 	rec.status = code
+// 	rec.ResponseWriter.WriteHeader(code)
+// 	panic(code)
+// }

@@ -115,13 +115,25 @@ func (doc *TopLevelDocument) AppendIdentity(resourceType, id string) error {
 	return doc.AppendData(resourceType, id, nil, nil, nil, nil)
 }
 
+type httpStatuser interface {
+	HTTPStatus() int
+}
+
 // AppendError implements ErrorAppender appending the error as
 // the detail member of an Error
-func (doc *TopLevelDocument) AppendError(detail error) {
-	if detail != nil {
-		doc.Errors = append(doc.Errors, Error{
-			Detail: detail.Error(),
-		})
+func (doc *TopLevelDocument) AppendError(err error) {
+	if err != nil {
+		error, ok := err.(Error)
+
+		if !ok {
+			error.Detail = err.Error()
+		}
+
+		if statuser, ok := err.(httpStatuser); ok {
+			error.Status = statuser.HTTPStatus()
+		}
+
+		doc.Errors = append(doc.Errors, error)
 	}
 }
 

@@ -2,7 +2,6 @@ package jsonapi
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"path"
 	"strings"
@@ -47,10 +46,13 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		*TopLevelDocument
 	}{ResponseWriter: res, TopLevelDocument: &TopLevelDocument{}}
 
+	status := http.StatusOK
+
 	switch req.Method {
 	case http.MethodGet:
 		hand.fetch.handle(resDoc, req, endpoint)
 	case http.MethodPost:
+		status = http.StatusCreated
 		if hand.create == nil {
 			res.WriteHeader(http.StatusForbidden)
 			return
@@ -58,10 +60,18 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		hand.create(resDoc, req, endpoint)
 	default:
 		res.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 
+	if len(resDoc.TopLevelDocument.Errors) != 0 {
+		status = ErrorsPolicy(resDoc.TopLevelDocument.Errors)
+	}
+
+	res.WriteHeader(status)
 	if err := json.NewEncoder(res).Encode(resDoc.TopLevelDocument); err != nil {
-		log.Print(err)
+		var doc TopLevelDocument
+		doc.AppendError(Error{Detail: "response could not be rendered", Status: http.StatusInternalServerError})
+		json.NewEncoder(res).Encode(doc)
 	}
 }
 

@@ -77,7 +77,7 @@ func Test_TopLevelDocument(t *testing.T) {
 		}
 
 		for key := range errMap {
-			if key != "detail" {
+			if key != "detail" /* && key != "status" */ {
 				t.Error("error object should not include members other than 'detail'")
 				t.Log(key)
 			}
@@ -87,5 +87,11 @@ func Test_TopLevelDocument(t *testing.T) {
 			t.Error("error object should have a member 'detail' with the expected error message")
 			t.Log(detailString)
 		}
+
+		// if statusString, ok := errMap["status"].(string); !ok || statusString != "500" {
+		// 	t.Error("error object should have a member 'status' with the expected error status")
+		// 	t.Log("when no status is set, encoding suspects this means an internal server error")
+		// 	t.Log(statusString)
+		// }
 	})
 }

@@ -92,6 +92,7 @@ func (hand fetchHandler) handle(res fetchResponder, req *http.Request, _ string)
 			return
 		}
 		hand.one(res, req, id)
+		return
 	}
 
 	rel, req.URL.Path = shiftPath(req.URL.Path)
@@ -105,6 +106,7 @@ func (hand fetchHandler) handle(res fetchResponder, req *http.Request, _ string)
 			return
 		}
 		relationshipsHand(res, req, id, rel)
+		return
 	}
 
 	if hand.related == nil {
