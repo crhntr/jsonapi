@@ -8,9 +8,8 @@
 * Handlers inspired by http.Handler.
 * Maximize flexibility for model/business logic implementation
 * Minimize (or abstain) from use of Reflection
-* Simple Mux
 * A few reasonably large example apps
-* BDD Tests to further inspire if example apps are not enough
+* Document BDD tests well to further show usage if example apps are not sufficient
 
 ## Links
 * Based on [`{json:api}`](https://jsonapi.org/)
