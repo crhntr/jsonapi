@@ -28,7 +28,7 @@ type Error struct {
 	Source string `json:"source,omitempty"`
 
 	// // Pointer may be a JSON Pointer [RFC6901] to the associated entity in the request document [e.g. "/data" for a primary data object, or "/data/attributes/title" for a specific attribute].
-	// Pointer
+	Pointer string `json:"pointer,omitempty"`
 
 	// Parameter may be a string indicating which URI query parameter caused the error.
 	Parameter string `json:"parameter,omitempty"`
