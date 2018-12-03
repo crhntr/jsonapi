@@ -18,10 +18,12 @@ type (
 	// CreateRequestData should be used to unmarshal create resource request
 	// bodies.
 	CreateRequestData struct {
-		ID            string          `json:"id,omitempty"`
-		Type          string          `json:"type"`
-		Attributes    json.RawMessage `json:"attributes,omitempty"`
-		Relationships Relationships   `json:"relationships,omitempty"`
+		Data struct {
+			ID            string          `json:"id,omitempty"`
+			Type          string          `json:"type"`
+			Attributes    json.RawMessage `json:"attributes,omitempty"`
+			Relationships Relationships   `json:"relationships,omitempty"`
+		} `json:"data"`
 	}
 )
 
