@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -79,135 +80,211 @@ func ExampleServeMux() {
 
 	// Do Client Stuff
 
-	// {
-	// 	fmt.Print("# Request Issues\n")
-	// 	fmt.Print("\n## REQUEST\n")
-	// 	req, err := http.NewRequest(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint), nil)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	req.Header.Set("Accept", jsonapi.ContentType)
-	// 	req.Header.Set("Content-Type", jsonapi.ContentType)
-	//
-	// 	fmt.Printf("%s	%s	%s\n", req.Method, req.URL.Path, req.Proto)
-	//
-	// 	res, err := http.DefaultClient.Do(req)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	//
-	// 	fmt.Print("\n## RESPONSE\n")
-	// 	fmt.Printf("%s	%s	%d\n", res.Proto, http.StatusText(res.StatusCode), res.StatusCode)
-	// 	fmt.Println("json\n   ")
-	// 	io.Copy(os.Stdout, res.Body)
-	// 	fmt.Println("\n")
-	// }
-	//
-	// {
-	// 	fmt.Print("\n# Create an feature\n")
-	//
-	// 	fmt.Print("\n## REQUEST\n")
-	// 	reqBody := `{"data": {"type": "feature","attributes": {"desc": "As a teapot, I should pour tea"}}}`
-	//
-	// 	req, err := http.NewRequest(http.MethodPost, testServer.URL+"/"+path.Join(issuesEndpoint), strings.NewReader(reqBody))
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	req.Header.Set("Accept", jsonapi.ContentType)
-	// 	req.Header.Set("Content-Type", jsonapi.ContentType)
-	//
-	// 	fmt.Printf("%s	%s	%s\n", req.Method, req.URL.Path, req.Proto)
-	// 	fmt.Println(reqBody)
-	//
-	// 	res, err := http.DefaultClient.Do(req)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	fmt.Print("\n## RESPONSE\n")
-	// 	fmt.Printf("%s	%s	%d\n", res.Proto, http.StatusText(res.StatusCode), res.StatusCode)
-	// 	fmt.Println("json\n   ")
-	// 	io.Copy(os.Stdout, res.Body)
-	// 	fmt.Println("\n")
-	// }
-	//
 	{
-		fmt.Print("# Create an bug\n")
+		fmt.Println("# Request all issues")
+
+		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint), nil)
+
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(printReqRes(res, nil))
+	}
+
+	{
+		fmt.Println("# Create a feature")
+
+		reqBody := `{"data": {"type": "feature","attributes": {"desc": "As a teapot, I should pour tea"}}}`
+
+		req := requestJSONAPI(http.MethodPost, testServer.URL+"/"+path.Join(issuesEndpoint), strings.NewReader(reqBody))
+
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(printReqRes(res, nil))
+	}
+
+	{
+		fmt.Println("# Create a bug")
 
 		reqBody := []byte(`{"data": {"type": "bug","attributes": {"desc": "When tea from teapot is poured out, it is not warm enough."}}}`)
 
-		req, err := http.NewRequest(http.MethodPost, testServer.URL+"/"+path.Join(issuesEndpoint), bytes.NewReader(reqBody))
-		if err != nil {
-			log.Fatal(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
+		req := requestJSONAPI(http.MethodPost, testServer.URL+"/"+path.Join(issuesEndpoint), bytes.NewReader(reqBody))
 
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Print(printReqRes(res, reqBody))
+		fmt.Println(printReqRes(res, reqBody))
 	}
-	//
-	// {
-	// 	fmt.Print("\n# Fetch one issue\n")
-	//
-	// 	fmt.Print("\n## REQUEST\n")
-	// 	reqBody := `{"data": {"type": "bug","attributes": {"desc": "When tea from teapot is poured out, it is not warm enough."}}}`
-	//
-	// 	req, err := http.NewRequest(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint, "0"), nil)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	req.Header.Set("Accept", jsonapi.ContentType)
-	// 	req.Header.Set("Content-Type", jsonapi.ContentType)
-	//
-	// 	fmt.Printf("%s	%s	%s\n", req.Method, req.URL.Path, req.Proto)
-	// 	fmt.Println(reqBody)
-	//
-	// 	res, err := http.DefaultClient.Do(req)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	fmt.Print("\n## RESPONSE\n")
-	// 	fmt.Printf("%s	%s	%d\n", res.Proto, http.StatusText(res.StatusCode), res.StatusCode)
-	// 	fmt.Println("json\n   ")
-	// 	io.Copy(os.Stdout, res.Body)
-	// 	fmt.Println("\n")
-	// }
 
 	{
-		fmt.Print("# Request Issues\n")
-		req, err := http.NewRequest(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint), nil)
-		if err != nil {
-			log.Fatal(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
+		fmt.Println("# Fetch the bug")
 
-		// fmt.Printf("%s	%s	%s\n", req.Method, req.URL.Path, req.Proto)
+		reqBody := []byte(`{"data": {"type": "bug","attributes": {"desc": "When tea from teapot is poured out, it is not warm enough."}}}`)
+
+		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint, "0"), nil)
 
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Print(printReqRes(res, nil))
-		// fmt.Printf("%s	%s	%d\n", res.Proto, http.StatusText(res.StatusCode), res.StatusCode)
-		// fmt.Println("json\n   ")
-		// io.Copy(os.Stdout, res.Body)
-		// fmt.Println("\n")
+		fmt.Println(printReqRes(res, reqBody))
+	}
+
+	{
+		fmt.Println("# Request Issues")
+
+		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint), nil)
+
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(printReqRes(res, nil))
 	}
 
 	// Output:
+	// # Request all issues
+	// ## REQUEST
+	//
+	// GET /issues HTTP/1.1
+	// Accept: application/vnd.api+json
+	// Content-Type: application/vnd.api+json
+	// ## RESONSE
+	//
+	// HTTP/1.1	OK	200
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": []
+	// }
+	//
+	// # Create a feature
+	// ## REQUEST
+	//
+	// POST /issues HTTP/1.1
+	// Accept: application/vnd.api+json
+	// Content-Type: application/vnd.api+json
+	//
+	// ## RESONSE
+	//
+	// HTTP/1.1	Created	201
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": {
+	//     "id": "1",
+	//     "type": "feature",
+	//     "attributes": {
+	//       "desc": "As a teapot, I should pour tea",
+	//       "done": false
+	//     }
+	//   }
+	// }
+	//
+	// # Create a bug
+	// ## REQUEST
+	//
+	// POST /issues HTTP/1.1
+	// Accept: application/vnd.api+json
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": {
+	//     "type": "bug",
+	//     "attributes": {
+	//       "desc": "When tea from teapot is poured out, it is not warm enough."
+	//     }
+	//   }
+	// }
+	// ## RESONSE
+	//
+	// HTTP/1.1	Created	201
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": {
+	//     "id": "2",
+	//     "type": "bug",
+	//     "attributes": {
+	//       "desc": "When tea from teapot is poured out, it is not warm enough.",
+	//       "done": false
+	//     }
+	//   }
+	// }
+	//
+	// # Fetch the bug
+	// ## REQUEST
+	//
+	// GET /issues/0 HTTP/1.1
+	// Accept: application/vnd.api+json
+	// Content-Type: application/vnd.api+json
+	// ## RESONSE
+	//
+	// HTTP/1.1	OK	200
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": {
+	//     "id": "0",
+	//     "type": "feature",
+	//     "attributes": {
+	//       "desc": "As a teapot, I should pour tea",
+	//       "done": false
+	//     }
+	//   }
+	// }
+	//
+	// # Request Issues
+	// ## REQUEST
+	//
+	// GET /issues HTTP/1.1
+	// Accept: application/vnd.api+json
+	// Content-Type: application/vnd.api+json
+	// ## RESONSE
+	//
+	// HTTP/1.1	OK	200
+	// Content-Type: application/vnd.api+json
+	// {
+	//   "data": [
+	//     {
+	//       "id": "0",
+	//       "type": "feature",
+	//       "attributes": {
+	//         "desc": "As a teapot, I should pour tea",
+	//         "done": false
+	//       }
+	//     },
+	//     {
+	//       "id": "1",
+	//       "type": "bug",
+	//       "attributes": {
+	//         "desc": "When tea from teapot is poured out, it is not warm enough.",
+	//         "done": false
+	//       }
+	//     }
+	//   ]
+	// }
+}
+
+func requestJSONAPI(method string, path string, body io.Reader) *http.Request {
+	req, err := http.NewRequest(method, path, body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Accept", jsonapi.ContentType)
+	req.Header.Set("Content-Type", jsonapi.ContentType)
+	return req
 }
 
 func printReqRes(res *http.Response, requestBody []byte) string {
 	req := res.Request
 	var buf []string
 
-	buf = append(buf, "## Request\n")
+	buf = append(buf, "## REQUEST\n")
 
 	url := fmt.Sprintf("%v %v %v", req.Method, req.URL.Path, req.Proto)
 	buf = append(buf, url)
@@ -217,11 +294,12 @@ func printReqRes(res *http.Response, requestBody []byte) string {
 
 	// If this is a POST, add post data
 	if req.Method == http.MethodPost || req.Method == http.MethodPatch {
-		buf = append(buf, "")
-		buf = append(buf, strings.TrimSpace(string(requestBody)))
+		indentBuffer := bytes.NewBuffer(nil)
+		json.Indent(indentBuffer, requestBody, "", "  ")
+		buf = append(buf, string(indentBuffer.Bytes()))
 	}
 
-	buf = append(buf, "\n## Response\n")
+	buf = append(buf, "## RESONSE\n")
 	buf = append(buf, fmt.Sprintf("%s	%s	%d", res.Proto, http.StatusText(res.StatusCode), res.StatusCode))
 	buf = append(buf, "Content-Type: "+req.Header.Get("Content-Type"))
 
@@ -229,22 +307,12 @@ func printReqRes(res *http.Response, requestBody []byte) string {
 	if err != nil {
 		panic(err)
 	}
-	if len(bodyBytes) > 0 {
-		buf = append(buf, "")
-		buf = append(buf, string(bodyBytes))
+	if bodyBytes != nil {
+		indentBuffer := bytes.NewBuffer(nil)
+		json.Indent(indentBuffer, bodyBytes, "", "  ")
+		buf = append(buf, string(indentBuffer.Bytes()))
 	}
 
 	// Return the request as a string
-	return strings.Join(buf, "\n") + "\n\n"
+	return strings.Join(buf, "\n")
 }
-
-//
-// HTTP/1.1	OK	200
-//	{
-//		"data": {
-//			"type": "feature",
-//			"attributes": {
-//				"desc": "As a teapot, I should pour tea"
-//			}
-//	}
-//}
