@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +16,12 @@ import (
 )
 
 func ExampleServeMux() {
+	mustNotErr := func(err error) {
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	var mux jsonapi.ServeMux
 
 	const issuesEndpoint = "issues"
@@ -83,8 +88,8 @@ func ExampleServeMux() {
 	{
 		fmt.Println("# Request all issues")
 
-		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+issuesEndpoint, nil)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, testServer.URL+"/"+issuesEndpoint, nil)
+		mustNotErr(err)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
@@ -98,8 +103,8 @@ func ExampleServeMux() {
 
 		reqBody := `{"data": {"type": "feature","attributes": {"desc": "As a teapot, I should pour tea"}}}`
 
-		req := requestJSONAPI(http.MethodPost, testServer.URL+"/"+issuesEndpoint, strings.NewReader(reqBody))
-
+		req, err := jsonapi.NewRequest(http.MethodPost, testServer.URL+"/"+issuesEndpoint, strings.NewReader(reqBody))
+		mustNotErr(err)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
@@ -113,8 +118,8 @@ func ExampleServeMux() {
 
 		reqBody := []byte(`{"data": {"type": "bug","attributes": {"desc": "When tea from teapot is poured out, it is not warm enough."}}}`)
 
-		req := requestJSONAPI(http.MethodPost, testServer.URL+"/"+issuesEndpoint, bytes.NewReader(reqBody))
-
+		req, err := jsonapi.NewRequest(http.MethodPost, testServer.URL+"/"+issuesEndpoint, bytes.NewReader(reqBody))
+		mustNotErr(err)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
@@ -128,8 +133,8 @@ func ExampleServeMux() {
 
 		reqBody := []byte(`{"data": {"type": "bug","attributes": {"desc": "When tea from teapot is poured out, it is not warm enough."}}}`)
 
-		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint, "0"), nil)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, testServer.URL+"/"+path.Join(issuesEndpoint, "0"), nil)
+		mustNotErr(err)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
@@ -141,8 +146,8 @@ func ExampleServeMux() {
 	{
 		fmt.Println("# Request Issues")
 
-		req := requestJSONAPI(http.MethodGet, testServer.URL+"/"+issuesEndpoint, nil)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, testServer.URL+"/"+issuesEndpoint, nil)
+		mustNotErr(err)
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			log.Fatal(err)
@@ -268,16 +273,6 @@ func ExampleServeMux() {
 	//     }
 	//   ]
 	// }
-}
-
-func requestJSONAPI(method string, path string, body io.Reader) *http.Request {
-	req, err := http.NewRequest(method, path, body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	req.Header.Set("Accept", jsonapi.ContentType)
-	req.Header.Set("Content-Type", jsonapi.ContentType)
-	return req
 }
 
 func printReqRes(res *http.Response, requestBody []byte) string {

@@ -13,13 +13,8 @@ import (
 func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 	t.Run("When Responding", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -129,7 +124,7 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 
 	t.Run("When Content-Type Request Header is Not Correct", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/", nil)
+		req, err := jsonapi.NewRequest(http.MethodGet, "/", nil)
 		if err != nil {
 			t.Error(err)
 		}
@@ -154,13 +149,8 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 	t.Run("When fetching an empty resource collection", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/resource", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/resource", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -200,13 +190,8 @@ func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 
 	t.Run("When fetching a resource collection", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/resource", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/resource", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -295,13 +280,8 @@ func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 
 	t.Run("When fetching an unknown resource", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/unknown", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/unknown", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -321,13 +301,8 @@ func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 
 	t.Run("When fetching a single resource", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/resource/n", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/resource/n", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -356,13 +331,8 @@ func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 
 	t.Run("When fetching a single resource that does not exist", func(t *testing.T) {
 		// Setup
-		req, err := http.NewRequest(http.MethodGet, "/resource/n", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/resource/n", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -403,13 +373,8 @@ func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 
 func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 	t.Run("When creating a single resource", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodPost, "/resource/n", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodPost, "/resource/n", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -431,13 +396,8 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 	})
 
 	t.Run("When a request to create resource is unsupported", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodPost, "/resource", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodPost, "/resource", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -453,13 +413,8 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 	})
 
 	t.Run("When a request with an unsupported http Method is submitted", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodPut, "/resource", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodPut, "/resource", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
@@ -475,13 +430,8 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 	})
 
 	t.Run("When a request returns an error", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodGet, "/resource/id", nil)
-		if err != nil {
-			t.Error(err)
-		}
-		req.Header.Set("Accept", jsonapi.ContentType)
-		req.Header.Set("Content-Type", jsonapi.ContentType)
-
+		req, err := jsonapi.NewRequest(http.MethodGet, "/resource/id", nil)
+		mustNotErr(t, err)
 		res := httptest.NewRecorder()
 
 		var mux jsonapi.ServeMux
