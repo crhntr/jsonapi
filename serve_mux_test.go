@@ -2,6 +2,7 @@ package jsonapi_test
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -448,4 +449,55 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 			t.Log(res.Body.String())
 		}
 	})
+
+	t.Run("When a PATCH request is requested", func(t *testing.T) {
+		req, err := jsonapi.NewRequest(http.MethodPatch, "/resource/id", nil)
+		mustNotErr(t, err)
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+		var callCount int
+		mux.HandleUpdate("resource", jsonapi.UpdateFunc(func(res jsonapi.UpdateResponder, req *http.Request, idStr string) {
+			callCount++
+		}))
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if res.Code != http.StatusOK {
+			t.Error("it should respond with status StatusOK")
+			t.Log(res.Code)
+			t.Log(res.Body.String())
+		}
+
+		if callCount != 1 {
+			t.Error("it should call the update handler func")
+		}
+	})
+
+	t.Run("When error occurs when marshaling the top level document", func(t *testing.T) {
+		req, err := jsonapi.NewRequest(http.MethodPatch, "/resource/id", nil)
+		mustNotErr(t, err)
+		res := httptest.NewRecorder()
+
+		var mux jsonapi.ServeMux
+		mux.HandleUpdate("resource", jsonapi.UpdateFunc(func(res jsonapi.UpdateResponder, req *http.Request, idStr string) {
+			res.SetData("errAttr", "someerr", errorAttr{}, nil, nil, nil)
+		}))
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if res.Code != http.StatusInternalServerError {
+			t.Error("it should respond with status StatusOK")
+			t.Log(res.Code)
+			t.Log(res.Body.String())
+		}
+	})
+}
+
+type errorAttr struct{}
+
+func (attr errorAttr) MarshalJSON() ([]byte, error) {
+	return nil, errors.New("some-err")
 }

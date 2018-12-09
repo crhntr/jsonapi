@@ -2,6 +2,7 @@ package jsonapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"path"
 	"strings"
@@ -58,6 +59,8 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 			return
 		}
 		hand.create(resDoc, req, endpoint)
+	case http.MethodPatch:
+		hand.update.handle(resDoc, req)
 	default:
 		res.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -67,12 +70,20 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		status = ErrorsPolicy(resDoc.TopLevelDocument.Errors)
 	}
 
-	res.WriteHeader(status)
-	if err := json.NewEncoder(res).Encode(resDoc.TopLevelDocument); err != nil {
+	marshaledDoc, err := json.Marshal(resDoc.TopLevelDocument)
+	if err != nil {
+		status = http.StatusInternalServerError
+
 		var doc TopLevelDocument
 		doc.AppendError(Error{Detail: "response could not be rendered", Status: http.StatusInternalServerError})
-		json.NewEncoder(res).Encode(doc)
+		marshaledDoc, err = json.Marshal(doc)
+		if err != nil {
+			log.Println(`{"errors": [{"detail": "top level document response could not be encoded"}]}`, err)
+		}
 	}
+
+	res.WriteHeader(status)
+	res.Write(append(marshaledDoc, '\n'))
 }
 
 func shiftPath(p string) (head, tail string) {
@@ -96,6 +107,7 @@ type EndpointHandler struct {
 	// PermitClientGeneratedID bool
 	fetch  fetchHandler
 	create CreateFunc
+	update updateHandler
 }
 
 // HandleFetchOne should be used to set and endpoint handler for
@@ -122,5 +134,14 @@ func (mux *ServeMux) HandleCreate(endpoint string, fn CreateFunc) {
 	mux.initResources()
 	handler := mux.Resources[endpoint]
 	handler.create = fn
+	mux.Resources[endpoint] = handler
+}
+
+// HandleUpdate should be used to set and endpoint handler for
+// PATCH `/:endpoint/:id`
+func (mux *ServeMux) HandleUpdate(endpoint string, fn UpdateFunc) {
+	mux.initResources()
+	handler := mux.Resources[endpoint]
+	handler.update.one = fn
 	mux.Resources[endpoint] = handler
 }
