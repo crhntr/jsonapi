@@ -83,7 +83,7 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.WriteHeader(status)
-	res.Write(append(marshaledDoc, '\n'))
+	res.Write(marshaledDoc)
 }
 
 func shiftPath(p string) (head, tail string) {

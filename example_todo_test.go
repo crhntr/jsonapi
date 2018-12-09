@@ -170,7 +170,6 @@ func ExampleServeMux() {
 	// {
 	//   "data": []
 	// }
-	//
 	// # Create a feature
 	// ## REQUEST
 	//
@@ -192,7 +191,6 @@ func ExampleServeMux() {
 	//     }
 	//   }
 	// }
-	//
 	// # Create a bug
 	// ## REQUEST
 	//
@@ -221,7 +219,6 @@ func ExampleServeMux() {
 	//     }
 	//   }
 	// }
-	//
 	// # Fetch the bug
 	// ## REQUEST
 	//
@@ -242,7 +239,6 @@ func ExampleServeMux() {
 	//     }
 	//   }
 	// }
-	//
 	// # Request Issues
 	// ## REQUEST
 	//
