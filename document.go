@@ -77,9 +77,9 @@ func (doc TopLevelDocument) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals a link as either an object or string depending on
 // how it has been encoded.
-func (doc *TopLevelDocument) UnmarshalJSON(buf []byte) error {
-	return nil
-}
+// func (doc *TopLevelDocument) UnmarshalJSON(buf []byte) error {
+// 	return nil
+// }
 
 // SetData implements DataSetter.
 func (doc *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
