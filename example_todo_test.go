@@ -38,7 +38,7 @@ func ExampleServeMux() {
 
 	issueTypes := map[string]struct{}{"bug": struct{}{}, "feature": struct{}{}, "chore": struct{}{}}
 
-	mux.HandleCreate(issuesEndpoint, jsonapi.CreateFunc(func(res jsonapi.CreateResponder, req *http.Request, _ string) {
+	mux.HandleCreate(issuesEndpoint, jsonapi.CreateFunc(func(res jsonapi.CreateResponder, req *http.Request) {
 		var body jsonapi.CreateRequestData
 
 		if err := json.NewDecoder(req.Body).Decode(&body); err != nil {

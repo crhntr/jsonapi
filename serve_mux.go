@@ -36,6 +36,8 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 	var endpoint string
 	endpoint, req.URL.Path = shiftPath(req.URL.Path)
 
+	req = contextWithEndpointValue(req, endpoint)
+
 	hand, found := mux.Resources[endpoint]
 	if !found {
 		res.WriteHeader(http.StatusNotFound)
@@ -51,14 +53,14 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	switch req.Method {
 	case http.MethodGet:
-		hand.fetch.handle(resDoc, req, endpoint)
+		hand.fetch.handle(resDoc, req)
 	case http.MethodPost:
 		status = http.StatusCreated
 		if hand.create == nil {
 			res.WriteHeader(http.StatusForbidden)
 			return
 		}
-		hand.create(resDoc, req, endpoint)
+		hand.create(resDoc, req)
 	case http.MethodPatch:
 		hand.update.handle(resDoc, req)
 	default:

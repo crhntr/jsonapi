@@ -70,7 +70,7 @@ type (
 	}
 )
 
-func (hand fetchHandler) handle(res fetchResponder, req *http.Request, _ string) {
+func (hand fetchHandler) handle(res fetchResponder, req *http.Request) {
 	if req.URL.Path == "/" {
 		if hand.col == nil {
 			res.WriteHeader(http.StatusNotFound)

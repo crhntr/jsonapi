@@ -383,8 +383,8 @@ func TestHandle_ServeHTTP_RequestMux_Creating(t *testing.T) {
 		var (
 			recievedEndpoint string
 		)
-		mux.HandleCreate("resource", jsonapi.CreateFunc(func(res jsonapi.CreateResponder, req *http.Request, endpoint string) {
-			recievedEndpoint = endpoint
+		mux.HandleCreate("resource", jsonapi.CreateFunc(func(res jsonapi.CreateResponder, req *http.Request) {
+			recievedEndpoint = jsonapi.Endpoint(req.Context())
 		}))
 
 		// Run

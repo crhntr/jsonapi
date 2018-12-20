@@ -50,7 +50,7 @@ func TestFetchHandler_handle(t *testing.T) {
 
 			res.MockDataCollectionSetter.EXPECT().SetDataCollection().MinTimes(1)
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			mustBeCalledOnce(callCount)
 		})
 
@@ -64,7 +64,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
@@ -86,7 +86,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			mustBeCalledOnce(callCount)
 		})
 
@@ -100,7 +100,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
@@ -124,7 +124,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			mustBeCalledOnce(callCount)
 		})
 
@@ -138,7 +138,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
@@ -155,7 +155,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
@@ -179,7 +179,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			mustBeCalledOnce(callCount)
 		})
 
@@ -193,7 +193,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
@@ -210,7 +210,7 @@ func TestFetchHandler_handle(t *testing.T) {
 			mustNotErr(err)
 			res := Response{ResponseRecorder: httptest.NewRecorder()}
 
-			hand.handle(res, req, "resource")
+			hand.handle(res, req)
 			if res.Code != http.StatusNotFound {
 				t.Error("it should return http status not found")
 			}
