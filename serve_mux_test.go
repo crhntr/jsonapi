@@ -147,6 +147,30 @@ func TestHandle_ServeHTTP_TopLevelAndContentNegotiation(t *testing.T) {
 	})
 }
 
+func TestHandle_ServeHTTP_RequestMux_Deleting(t *testing.T) {
+	t.Run("When deleting", func(t *testing.T) {
+		req, err := jsonapi.NewRequest(http.MethodDelete, "/resource/n", nil)
+		mustNotErr(t, err)
+		res := httptest.NewRecorder()
+
+		var (
+			mux              jsonapi.ServeMux
+			recievedEndpoint string
+		)
+		mux.HandleDelete("resource", jsonapi.DeleteFunc(func(res jsonapi.DeleteResponder, req *http.Request, id string) {
+			recievedEndpoint = jsonapi.Endpoint(req.Context())
+		}))
+
+		// Run
+		mux.ServeHTTP(res, req)
+
+		if recievedEndpoint != "resource" {
+			t.Error("it should recieve the correct endpoint parameter")
+			t.Log(recievedEndpoint)
+		}
+	})
+}
+
 func TestHandle_ServeHTTP_RequestMux_Fetching(t *testing.T) {
 	t.Run("When fetching an empty resource collection", func(t *testing.T) {
 		// Setup

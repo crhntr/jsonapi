@@ -6,9 +6,10 @@ import (
 )
 
 type (
-	// UpdateFunc defines how to handle a request to create a resource.
+	// An UpdateFunc responds to a request to update a single resource.
 	UpdateFunc func(res UpdateResponder, req *http.Request, id string)
 
+	// UpdateRelationshipsFunc defines
 	UpdateRelationshipsFunc func(res UpdateRelationshipsResponder, req *http.Request, id, relation string)
 
 	// UpdateResponder defines what to respond to a request to create a resource.
@@ -17,6 +18,7 @@ type (
 		ErrorAppender
 	}
 
+	// UpdateRelationshipsResponder represents the API for responding to an update Relationships endpoint
 	UpdateRelationshipsResponder interface {
 		IdentitySetter
 		IdentityAppender

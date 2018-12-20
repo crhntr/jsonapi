@@ -110,6 +110,7 @@ type EndpointHandler struct {
 	fetch  fetchHandler
 	create CreateFunc
 	update updateHandler
+	delete DeleteFunc
 }
 
 // HandleFetchOne should be used to set and endpoint handler for
@@ -145,5 +146,14 @@ func (mux *ServeMux) HandleUpdate(endpoint string, fn UpdateFunc) {
 	mux.initResources()
 	handler := mux.Resources[endpoint]
 	handler.update.one = fn
+	mux.Resources[endpoint] = handler
+}
+
+// HandleDelete should be used to set and endpoint handler for
+// POST `/:endpoint`
+func (mux *ServeMux) HandleDelete(endpoint string, fn DeleteFunc) {
+	mux.initResources()
+	handler := mux.Resources[endpoint]
+	handler.delete = fn
 	mux.Resources[endpoint] = handler
 }
