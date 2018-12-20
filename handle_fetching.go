@@ -5,11 +5,11 @@ import (
 )
 
 type (
-	// FetchOneFunc defines how to handle a request for a single resource.
+	// A FetchOneFunc implements fetching a single resource.
 	FetchOneFunc func(res FetchOneResonder, req *http.Request, idStr string)
 
-	// FetchCollectionFunc defines how to handle a request for a collection of
-	// resources.
+	// A FetchCollectionFunc implements fetching a collection of resources at some
+	// endpoint.
 	FetchCollectionFunc func(res FetchCollectionResponder, req *http.Request)
 
 	// FetchRelatedFunc defines how to handle a request for a related resource.

@@ -14,8 +14,8 @@ type Identity struct {
 	Type string `json:"type"`
 }
 
-// ValidateMemberName expects that the name follows the stricter naming
-// standards. For example, spaces are not allowed.
+// ValidateMemberName checks if a given name is approprate for a vendor name.
+// It is not used internally; however, you may want to use it in your tests.
 func ValidateMemberName(name string) error {
 	if len(name) == 0 {
 		return errors.New("a valid member name must have at least one character")

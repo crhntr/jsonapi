@@ -6,11 +6,18 @@ import (
 )
 
 type (
-	// An UpdateFunc responds to a request to update a single resource.
+	// A UpdateFunc implements how a given single resource is to be updated.
 	UpdateFunc func(res UpdateResponder, req *http.Request, id string)
 
-	// UpdateRelationshipsFunc defines
-	UpdateRelationshipsFunc func(res UpdateRelationshipsResponder, req *http.Request, id, relation string)
+	// UpdateRelationshipsFunc implements how a given single resource's
+	// relationships are to be updated.
+	// Please note that AppendIdentity and SetIdentity are mutually exlcusive on
+	// the response. You should only call one of the two depending on if the
+	// relationship being updated is to one or to many.
+	UpdateRelationshipsFunc func(
+		res UpdateRelationshipsResponder,
+		req *http.Request,
+		id, relation string)
 
 	// UpdateResponder defines what to respond to a request to create a resource.
 	UpdateResponder interface {
@@ -18,7 +25,7 @@ type (
 		ErrorAppender
 	}
 
-	// UpdateRelationshipsResponder represents the API for responding to an update Relationships endpoint
+	// UpdateRelationshipsResponder defines what to respond to a request to create a resource.
 	UpdateRelationshipsResponder interface {
 		IdentitySetter
 		IdentityAppender

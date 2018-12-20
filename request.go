@@ -5,7 +5,8 @@ import (
 	"net/http"
 )
 
-// NewRequest is a helper method to set required headers on requests
+// NewRequest sets required jsonapi headers for requests to jsonapi servers.
+// It is used internally for tests and examples.
 func NewRequest(method string, path string, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, path, body)
 	if err != nil {

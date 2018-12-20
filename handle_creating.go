@@ -6,7 +6,7 @@ import (
 )
 
 type (
-	// CreateFunc defines how to handle a request to create a resource.
+	// A CreateFunc implements how a resources of a given type is to be created.
 	CreateFunc func(res CreateResponder, req *http.Request)
 
 	// CreateResponder defines what to respond to a request to create a resource.
@@ -15,8 +15,7 @@ type (
 		ErrorAppender
 	}
 
-	// CreateRequestData should be used to unmarshal create resource request
-	// bodies.
+	// CreateRequestData represents the request body for a creating a resource.
 	CreateRequestData struct {
 		Data struct {
 			ID            string          `json:"id,omitempty"`
