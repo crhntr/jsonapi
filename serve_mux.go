@@ -63,6 +63,10 @@ func (mux ServeMux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		hand.create(resDoc, req)
 	case http.MethodPatch:
 		hand.update.handle(resDoc, req)
+	case http.MethodDelete:
+		var id string
+		id, req.URL.Path = shiftPath(req.URL.Path)
+		hand.delete(resDoc, req, id)
 	default:
 		res.WriteHeader(http.StatusMethodNotAllowed)
 		return
