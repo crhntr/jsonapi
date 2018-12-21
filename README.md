@@ -11,5 +11,10 @@
 * A few reasonably large example apps
 * Document BDD tests well to further show usage if example apps are not sufficient
 
+... maybe also
+
+* write a cli to generate based on API YAML
+  * also generate default database/models
+
 ## Links
 * Based on [`{json:api}`](https://jsonapi.org/)
