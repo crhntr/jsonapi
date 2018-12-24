@@ -81,26 +81,63 @@ func (doc TopLevelDocument) MarshalJSON() ([]byte, error) {
 // 	return nil
 // }
 
-// SetData implements DataSetter.
-func (doc *TopLevelDocument) SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
-	doc.resourceSlice = nil
-	doc.Data = &Resource{
-		ID:            id,
-		Type:          resourceType,
-		Attributes:    attributes,
-		Relationships: relationships,
+type ResourceOption = func(res Resource) Resource
+
+func SetAttributes(attributes interface{}) ResourceOption {
+	return func(res Resource) Resource {
+		res.Attributes = attributes
+		return res
 	}
+}
+
+func SetRelationships(relationships Relationships) ResourceOption {
+	return func(res Resource) Resource {
+		res.Relationships = relationships
+		return res
+	}
+}
+
+func SetLinks(links Links) ResourceOption {
+	return func(res Resource) Resource {
+		return res
+	}
+}
+
+func SetMeta(meta Meta) ResourceOption {
+	return func(res Resource) Resource {
+		return res
+	}
+}
+
+// SetData implements DataSetter.
+func (doc *TopLevelDocument) SetData(resourceType, id string, options ...ResourceOption) error {
+	doc.resourceSlice = nil
+
+	resource := Resource{
+		ID:   id,
+		Type: resourceType,
+	}
+
+	for _, opt := range options {
+		resource = opt(resource)
+	}
+
+	doc.Data = &resource
 	return nil
 }
 
 // AppendData implements DataAppender.
-func (doc *TopLevelDocument) AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error {
-	doc.resourceSlice = append(doc.resourceSlice, Resource{
-		ID:            id,
-		Type:          resourceType,
-		Attributes:    attributes,
-		Relationships: relationships,
-	})
+func (doc *TopLevelDocument) AppendData(resourceType, id string, options ...ResourceOption) error {
+	resource := Resource{
+		ID:   id,
+		Type: resourceType,
+	}
+
+	for _, opt := range options {
+		resource = opt(resource)
+	}
+
+	doc.resourceSlice = append(doc.resourceSlice, resource)
 	doc.Data = doc.resourceSlice
 	return nil
 }

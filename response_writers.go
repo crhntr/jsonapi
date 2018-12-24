@@ -5,12 +5,12 @@ package jsonapi
 type (
 	// DataSetter represents the interface to set an individual resource object.
 	DataSetter interface {
-		SetData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
+		SetData(resourceType, id string, options ...ResourceOption) error
 	}
 
 	// DataAppender represents the interface to set a collection resource objects.
 	DataAppender interface {
-		AppendData(resourceType, id string, attributes interface{}, relationships Relationships, links Links, meta Meta) error
+		AppendData(resourceType, id string, options ...ResourceOption) error
 	}
 
 	// IdentitySetter represents the interface to set a single resource linkage.
